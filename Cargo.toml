@@ -1,0 +1,20 @@
+[package]
+
+name = "erya"
+version = "0.0.1"
+authors = ["tioover <tioover@gmail.com>"]
+
+
+
+[lib]
+name = "erya"
+path = "src/lib.rs"
+
+[dependencies]
+num = "*"
+glutin = "*"
+glium = "*"
+time = "*"
+uuid = "*"
+nalgebra = "*"
+image = "*"
