@@ -2,6 +2,7 @@ extern crate nalgebra;
 extern crate time;
 extern crate rand;
 extern crate image;
+extern crate num;
 #[macro_use]
 extern crate glium;
 
@@ -28,6 +29,7 @@ pub mod mesh;
 pub mod resource;
 pub mod texture;
 pub mod id;
+pub mod math;
 
 use std::string::ToString;
 use glium::glutin::WindowBuilder;
