@@ -35,7 +35,8 @@ impl<'display> Renderer<'display> {
     }
 
     pub fn draw<U>(&self, target: &mut Frame, mesh: &Mesh, uniforms: &U)
-            where U: Uniforms {
+        where U: Uniforms
+    {
         target.draw(
             &mesh.vertex_buffer,
             &mesh.index_buffer,

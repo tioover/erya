@@ -42,16 +42,15 @@ impl<'a, T: Resource> Manager<'a, T> {
 
     pub fn get<P: AsRef<Path>>(&self, p: P) -> Rc<T> {
         let key = self.path.join(p);
-        match {
+        let pointer = {
             let map = self.map.borrow();
             if map.contains_key(&key) {
                 let weak = self.map.borrow()[&key].clone();
                 weak.upgrade()
             }
-            else {
-                None
-            }
-        } {
+            else { None }
+        };
+        match pointer {
             None => self.load(&key),
             Some (x) => x,
         }

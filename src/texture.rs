@@ -3,6 +3,7 @@ use glium::Display;
 use glium::texture::{Texture2dDataSource, CompressedSrgbTexture2d};
 use std::cmp::{PartialEq, Eq};
 
+
 pub struct Texture {
     pub id: Id,
     pub height: u32,

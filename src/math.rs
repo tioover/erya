@@ -3,15 +3,19 @@ use num;
 use num::Float;
 use na::{Vec2, Vec4, Mat4, Rot2, Diag};
 
-pub type Mat = Mat4<f32>;
+
+pub type Matrix = Mat4<f32>;
+
+pub const ROUND: f32 = 6.28318530717958647692528676655900576;
 
 #[inline]
-pub fn scaling(factor: f32) -> Mat {
+pub fn scaling(factor: f32) -> Matrix {
     Mat4::from_diag(&Vec4::new(factor, factor, factor, 1.0))
 }
 
+
 #[inline]
-pub fn translation(vec: Vec2<f32>) -> Mat {
+pub fn translation(vec: Vec2<f32>) -> Matrix {
     Mat4::new(
         1.0, 0.0, 0.0, vec.x,
         0.0, 1.0, 0.0, vec.y,
@@ -19,10 +23,9 @@ pub fn translation(vec: Vec2<f32>) -> Mat {
         0.0, 0.0, 0.0,   1.0)
 }
 
+
 #[inline]
 pub fn rotation(t: f32) -> Rot2<f32> {
-    const ROUND: f32 = 6.28318530717958647692528676655900576;
-
     Rot2::new(na![t * ROUND])
 }
 
@@ -48,7 +51,8 @@ pub fn curve<F: Float>(control: [Vec2<F>; 4], t: F) -> Vec2<F> {
 
 
 pub fn linear<T, F: Float>(a: T, b: T, t: F) -> T
-        where T: Copy + Add<T, Output=T> + Sub<T, Output=T> + Mul<F, Output=T> {
+    where T: Copy + Add<T, Output=T> + Sub<T, Output=T> + Mul<F, Output=T>
+{
     (b-a) * t + a
 }
 
