@@ -1,5 +1,6 @@
 extern crate nalgebra;
-extern crate uuid;
+extern crate time;
+extern crate rand;
 extern crate image;
 #[macro_use]
 extern crate glium;

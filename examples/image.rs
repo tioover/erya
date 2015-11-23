@@ -35,7 +35,7 @@ fn main() {
             target.clear_color(0.0, 0.0, 0.0, 0.0);
             renderer.draw(&mut target, &mesh, &uniform!{
                 matrix: na::one::<na::Mat4<f32>>(),
-                color_multiply: [1.0f32, 1.0, 1.0, 1.0],
+                color_multiply: na::one::<na::Vec4<f32>>(),
                 tex: tex,
             });
             target.finish().unwrap();
