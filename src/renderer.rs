@@ -1,6 +1,7 @@
 use glium::{Display, Program, DrawParameters, Frame, Surface};
 use glium::uniforms::Uniforms;
 use mesh::Mesh;
+use math::Matrix;
 
 pub struct Renderer<'display> {
     pub display: &'display Display,
@@ -51,5 +52,19 @@ impl<'display> Renderer<'display> {
         use std::default::Default;
 
         DrawParameters { blend: Blend::alpha_blending(), ..Default::default() }
+    }
+}
+
+
+pub trait Renderable {
+    fn draw(&self, renderer: &Renderer, target: &mut Frame, parent: &Matrix);
+}
+
+
+impl<'a> Renderable for Vec<&'a Renderable> {
+    fn draw(&self, renderer: &Renderer, target: &mut Frame, parent: &Matrix) {
+        for renderable in self {
+            renderable.draw(renderer, target, parent);
+        }
     }
 }
