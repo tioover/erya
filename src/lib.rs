@@ -30,6 +30,8 @@ pub mod resource;
 pub mod texture;
 pub mod id;
 pub mod math;
+pub mod rect;
+
 
 use std::string::ToString;
 use glium::glutin::WindowBuilder;
