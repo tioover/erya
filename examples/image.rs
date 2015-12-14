@@ -3,7 +3,6 @@ extern crate erya;
 extern crate glium;
 
 use std::path::PathBuf;
-use std::time::Duration;
 use glium::Surface;
 use erya::na;
 use erya::renderer::Renderer;
@@ -40,6 +39,6 @@ fn main() {
                 _ => (),
             }
         }
-        ::std::thread::sleep(Duration::from_millis(1));
+        erya::timer::sleep_ms(1);
     }
 }

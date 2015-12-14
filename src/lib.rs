@@ -31,6 +31,7 @@ pub mod texture;
 pub mod id;
 pub mod math;
 pub mod rect;
+pub mod timer;
 
 
 use std::string::ToString;

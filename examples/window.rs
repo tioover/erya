@@ -19,5 +19,6 @@ fn main() {
                 _ => (),
             }
         }
+        erya::timer::sleep_ms(10);
     }
 }
