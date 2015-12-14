@@ -8,12 +8,12 @@ use erya::resource::Manager;
 use erya::texture::Texture;
 use erya::mesh::Mesh;
 use erya::rect::Rect;
-use erya::camera::Camera;
+use erya::camera::Camera2D;
 
 
 fn main() {
     let display = erya::build_display("image", (800, 600));
-    let camera = Camera::new(&display);
+    let camera = Camera2D::new(&display);
     let renderer = Renderer::new(&display);
     let textures = Manager::<Texture>::new(&display, "examples/assets");
     let tex = &textures.get("block.png").data;

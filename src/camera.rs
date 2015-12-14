@@ -2,14 +2,14 @@ use glium::Display;
 use math::Matrix;
 
 
-pub struct Camera<'display> {
+pub struct Camera2D<'display> {
     display: &'display Display,
 }
 
 
-impl<'display> Camera<'display> {
-    pub fn new(display: &'display Display) -> Camera<'display> {
-        Camera {
+impl<'display> Camera2D<'display> {
+    pub fn new(display: &'display Display) -> Camera2D<'display> {
+        Camera2D {
             display: display,
         }
     }
