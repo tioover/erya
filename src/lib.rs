@@ -32,7 +32,7 @@ pub mod id;
 pub mod math;
 pub mod rect;
 pub mod timer;
-
+pub mod camera;
 
 use std::string::ToString;
 use glium::glutin::WindowBuilder;
