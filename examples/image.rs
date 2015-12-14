@@ -2,7 +2,6 @@ extern crate erya;
 #[macro_use]
 extern crate glium;
 
-use std::path::PathBuf;
 use glium::Surface;
 use erya::renderer::Renderer;
 use erya::resource::Manager;
@@ -13,10 +12,10 @@ use erya::camera::Camera;
 
 
 fn main() {
-    let display = erya::build_display("Image", (800, 600));
+    let display = erya::build_display("image", (800, 600));
     let camera = Camera::new(&display);
     let renderer = Renderer::new(&display);
-    let textures = Manager::<Texture>::new(&display, PathBuf::from("examples/assets"));
+    let textures = Manager::<Texture>::new(&display, "examples/assets");
     let tex = &textures.get("block.png").data;
 
     'main: loop {

@@ -25,10 +25,10 @@ pub struct Manager<'a, T: Resource> {
 
 
 impl<'a, T: Resource> Manager<'a, T> {
-    pub fn new(display: &'a Display, path: PathBuf) -> Manager<'a, T> {
+    pub fn new<P: AsRef<Path>>(display: &'a Display, path: P) -> Manager<'a, T> {
         Manager {
             map: RefCell::new(Map::new()),
-            path: path,
+            path: path.as_ref().to_path_buf(),
             display: display,
         }
     }
