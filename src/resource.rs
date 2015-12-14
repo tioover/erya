@@ -4,6 +4,7 @@ use std::cell::RefCell;
 use std::convert::AsRef;
 use std::collections::BTreeMap;
 use image;
+use image::GenericImage;
 use glium::Display;
 use texture::Texture;
 
@@ -60,7 +61,10 @@ impl<'a, T: Resource> Manager<'a, T> {
 
 impl Resource for Texture {
     fn load(display: &Display, path: &Path) -> Texture {
-        let img = image::open(path).unwrap();
-        Texture::new(display, img)
+        let image = image::open(path).unwrap();
+        let image_dimensions = image.dimensions();
+        let image = ::glium::texture::RawImage2d::from_raw_rgba_reversed(
+            image.raw_pixels(), image_dimensions);
+        Texture::new(display, image)
     }
 }

@@ -10,11 +10,10 @@ fn main() {
     let display = erya::build_display("Window", (800, 600));
 
     'main: loop {
+        let mut target = display.draw();
+        target.clear_color(0.0, 0.0, 0.0, 0.0);
+        target.finish().unwrap();
         for event in display.poll_events() {
-            let mut target = display.draw();
-            target.clear_color(0.0, 0.0, 0.0, 0.0);
-            target.finish().unwrap();
-
             match event {
                 Event::Closed => break 'main,
                 _ => (),
