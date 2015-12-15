@@ -21,6 +21,7 @@ pub struct Manager<'a, T: Resource> {
     pub map: RefCell<Map<T>>,
     path: PathBuf,
     display: &'a Display,
+    self_ref: RefCell<Vec<Rc<T>>>,
 }
 
 
@@ -30,6 +31,7 @@ impl<'a, T: Resource> Manager<'a, T> {
             map: RefCell::new(Map::new()),
             path: path.as_ref().to_path_buf(),
             display: display,
+            self_ref: RefCell::new(Vec::new()),
         }
     }
 
@@ -38,6 +40,15 @@ impl<'a, T: Resource> Manager<'a, T> {
         if map.contains_key(key) { let _ = map.remove(key); }
         let res = Rc::new(T::load(self.display, &key));
         map.insert(key.clone(), Rc::downgrade(&res));
+        return res;
+    }
+
+    pub fn load_persistent(&mut self, key: &PathBuf) -> Rc<T> {
+        let res = self.load(key);
+        {
+            let mut refs = self.self_ref.borrow_mut();
+            refs.push(res.clone())
+        }
         return res;
     }
 
@@ -55,6 +66,11 @@ impl<'a, T: Resource> Manager<'a, T> {
             None => self.load(&key),
             Some (x) => x,
         }
+    }
+
+
+    pub fn release_persistent(&mut self) {
+        self.self_ref.borrow_mut().clear();
     }
 }
 
