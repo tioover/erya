@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub, Mul};
 use num;
 use num::Float;
-use na::{Vec2, Vec4, Mat4, Rot2, Diag};
+use na::{Vec2, Vec3, Vec4, Mat4, Rot2, Diag};
 
 
 pub type Matrix = Mat4<f32>;
@@ -15,12 +15,12 @@ pub fn scaling(factor: f32) -> Matrix {
 
 
 #[inline]
-pub fn translation(vec: Vec2<f32>) -> Matrix {
+pub fn translation(v: Vec3<f32>) -> Matrix {
     Mat4::new(
-        1.0, 0.0, 0.0, vec.x,
-        0.0, 1.0, 0.0, vec.y,
-        0.0, 0.0, 1.0,   0.0,
-        0.0, 0.0, 0.0,   1.0)
+        1.0, 0.0, 0.0, v.x,
+        0.0, 1.0, 0.0, v.y,
+        0.0, 0.0, 1.0, v.z,
+        0.0, 0.0, 0.0, 1.0)
 }
 
 

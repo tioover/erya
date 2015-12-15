@@ -1,9 +1,10 @@
 use glium::Display;
 use math::Matrix;
-
+use transform::Transform;
 
 pub struct Camera2D<'display> {
     display: &'display Display,
+    transform: Transform,
 }
 
 
@@ -11,6 +12,7 @@ impl<'display> Camera2D<'display> {
     pub fn new(display: &'display Display) -> Camera2D<'display> {
         Camera2D {
             display: display,
+            transform: Transform::new(),
         }
     }
 
@@ -24,7 +26,7 @@ impl<'display> Camera2D<'display> {
             0.0, -f/h,  0.0,  1.0,
             0.0,  0.0, -1.0,  0.0,
             0.0,  0.0,  0.0,  1.0,
-        )
+        ) * self.transform.matrix()
     }
 }
 
