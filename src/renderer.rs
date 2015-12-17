@@ -28,16 +28,16 @@ impl<'display, S: Shader> Renderer<'display, S> {
     }
 
     pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S)
-        where P: Polygon
+        where P: Polygon<S::Vertex>
     {
         let &Mesh(ref vb, ref ib) = &*polygon.mesh(&self.display);
         target.draw(vb, ib, &self.program, uniforms, &self.params).unwrap();
     }
 
     fn build_params<'a>() -> DrawParameters<'a> {
-        use glium::Blend;
-        use std::default::Default;
-
-        DrawParameters { blend: Blend::alpha_blending(), ..Default::default() }
+        DrawParameters {
+            blend: ::glium::Blend::alpha_blending(),
+            ..::std::default::Default::default()
+        }
     }
 }

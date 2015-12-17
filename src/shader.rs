@@ -4,9 +4,11 @@ use glium::uniforms::{Uniforms, UniformValue, AsUniformValue};
 use texture::Texture;
 // use texture::TextureData;
 use math::Matrix;
+use mesh::{Vertex, VertexType};
 
 
 pub trait Shader: Uniforms {
+    type Vertex: VertexType;
     fn program(&Display) -> Program;
 }
 
@@ -25,6 +27,7 @@ impl Default {
 
 
 impl Shader for Default {
+    type Vertex = Vertex;
     fn program(display: &Display) -> Program {
         let vert = include_str!("shader/140/default.vert");
         let frag = include_str!("shader/140/default.frag");

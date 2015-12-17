@@ -36,8 +36,8 @@ impl Sprite {
 
 }
 
-impl Polygon for Sprite {
-    fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh> {
+impl Polygon<Vertex> for Sprite {
+    fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh<Vertex>> {
         use glium::index::PrimitiveType::TriangleStrip;
         use mesh::{VertexBuffer, IndexBuffer};
 

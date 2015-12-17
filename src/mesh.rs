@@ -2,8 +2,10 @@ use glium;
 use glium::Display;
 use utils::Ref;
 
+pub use glium::VertexBuffer;
+pub use glium::Vertex as VertexType;
 
-pub type VertexBuffer = glium::VertexBuffer<Vertex>;
+
 pub type IndexBuffer = glium::IndexBuffer<u16>;
 
 
@@ -17,16 +19,18 @@ pub struct Vertex {
 implement_vertex!(Vertex, position, tex_coords);
 
 
-pub struct Mesh (pub VertexBuffer, pub IndexBuffer);
+pub struct Mesh<V: VertexType> (pub VertexBuffer<V>, pub IndexBuffer);
 
 
-pub trait Polygon {
-    fn mesh<'a>(&'a self, &Display) -> Ref<'a, Mesh>;
+pub trait Polygon<V: VertexType> {
+    fn mesh<'a>(&'a self, &Display) -> Ref<'a, Mesh<V>>;
 }
 
 
-impl Polygon for Mesh {
-    fn mesh<'a>(&'a self, _: &Display) -> Ref<'a, Mesh> {
+impl<V> Polygon<V> for Mesh<V>
+    where V: VertexType
+{
+    fn mesh<'a>(&'a self, _: &Display) -> Ref<'a, Mesh<V>> {
         Ref::Borrowed(self)
     }
 }
