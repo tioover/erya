@@ -1,50 +1,37 @@
+use std::marker::PhantomData;
 use glium::{Display, Program, DrawParameters, Frame, Surface};
-use glium::uniforms::Uniforms;
-use mesh::Mesh;
-use math::Matrix;
+use mesh::{Mesh, Polygon};
+use shader;
+use shader::Shader;
 
-pub struct Renderer<'display> {
+
+pub struct Renderer<'display, S=shader::Default>
+    where S: Shader
+{
     pub display: &'display Display,
     program: Program,
     params: DrawParameters<'display>,
+    _mark: PhantomData<S>,
 }
 
 
 
-impl<'display> Renderer<'display> {
-    pub fn new(display: &'display Display) -> Renderer<'display> {
-        let vert = include_str!("shader/140/default.vert");
-        let frag = include_str!("shader/140/default.frag");
-        Renderer::with_shader(display, vert, frag)
-    }
-
-    pub fn with_shader( display: &'display Display,
-                         vertex: &str,
-                       fragment: &str)
-                       -> Renderer<'display> {
-        let program = program!(display,
-            140 => {
-                vertex: vertex,
-                fragment: fragment,
-            },
-        ).unwrap();
+impl<'display, S: Shader> Renderer<'display, S> {
+    pub fn new(display: &'display Display) -> Renderer<'display, S> {
+        let program = S::program(display);
         Renderer {
             display: display,
             program: program,
-            params: Renderer::build_params(),
+            params: Renderer::<S>::build_params(),
+            _mark: PhantomData,
         }
     }
 
-    pub fn draw<U>(&self, target: &mut Frame, mesh: &Mesh, uniforms: &U)
-        where U: Uniforms
+    pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S)
+        where P: Polygon
     {
-        target.draw(
-            &mesh.vertex_buffer,
-            &mesh.index_buffer,
-            &self.program,
-            uniforms,
-            &self.params
-        ).unwrap();
+        let &Mesh(ref vb, ref ib) = &*polygon.mesh(&self.display);
+        target.draw(vb, ib, &self.program, uniforms, &self.params).unwrap();
     }
 
     fn build_params<'a>() -> DrawParameters<'a> {
@@ -52,19 +39,5 @@ impl<'display> Renderer<'display> {
         use std::default::Default;
 
         DrawParameters { blend: Blend::alpha_blending(), ..Default::default() }
-    }
-}
-
-
-pub trait Renderable {
-    fn draw(&self, renderer: &Renderer, target: &mut Frame, parent: &Matrix);
-}
-
-
-impl<'a> Renderable for Vec<&'a Renderable> {
-    fn draw(&self, renderer: &Renderer, target: &mut Frame, parent: &Matrix) {
-        for renderable in self {
-            renderable.draw(renderer, target, parent);
-        }
     }
 }

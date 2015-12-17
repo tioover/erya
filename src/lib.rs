@@ -20,6 +20,11 @@ macro_rules! na {
 }
 
 
+macro_rules! from {
+    ($x: expr) => ($crate::num::NumCast::from($x).unwrap())
+}
+
+
 pub use nalgebra as na;
 pub use glium::Display;
 
@@ -34,6 +39,10 @@ pub mod rect;
 pub mod timer;
 pub mod camera;
 pub mod transform;
+pub mod sprite;
+pub mod shader;
+pub mod utils;
+
 
 use std::string::ToString;
 use glium::glutin::WindowBuilder;

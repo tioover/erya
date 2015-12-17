@@ -1,3 +1,7 @@
+use num::NumCast;
+use na::Vec2;
+
+
 pub struct Rect {
     pub x: f32,
     pub y: f32,
@@ -7,7 +11,21 @@ pub struct Rect {
 
 
 impl Rect {
-    pub fn new(x: f32, y: f32, w: f32, h: f32) -> Rect {
-        Rect { x: x, y: y, width: w, height: h }
+    pub fn new<N: NumCast>(x: N, y: N, w: N, h: N) -> Rect {
+        Rect {
+            x: from!(x),
+            y: from!(y),
+            width: from!(w),
+            height: from!(h)
+        }
+    }
+
+
+    pub fn position(&self) -> Vec2<f32> {
+        Vec2::new(self.x, self.y)
+    }
+
+    pub fn size(&self) -> Vec2<f32> {
+        Vec2::new(self.width, self.height)
     }
 }
