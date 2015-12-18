@@ -5,9 +5,14 @@ use mesh::{Mesh, Vertex, Polygon};
 use transform::Transform;
 use rect::Rect;
 use utils::Ref;
+use renderer::Renderable;
+use shader;
+use math::Matrix;
+use id::Id;
 
 
 pub struct Sprite {
+    pub id: Id,
     texture: Rc<Texture>,
     width: f32,
     height: f32,
@@ -26,6 +31,7 @@ impl Sprite {
         -> Sprite
     {
         Sprite {
+            id: Id::new(),
             texture: tex,
             rect: rect,
             width: from!(width),
@@ -68,4 +74,18 @@ impl Polygon<Vertex> for Sprite {
         )
     }
 }
+
+
+
+impl Renderable<shader::Default> for Sprite {
+    fn uniforms<'a>(&'a self, parent: &Matrix) -> Ref<'a, shader::Default> {
+        Ref::Owned(
+            shader::Default {
+                texture: self.texture.clone(),
+                matrix: *parent * self.transform.matrix(),
+            }
+        )
+    }
+}
+
 

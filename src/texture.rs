@@ -1,10 +1,19 @@
 use id::Id;
 use glium::Display;
-use glium::texture::{Texture2dDataSource, CompressedSrgbTexture2d};
+use glium::texture::Texture2dDataSource;
 use std::cmp::{PartialEq, Eq};
 
 
-pub type TextureData = CompressedSrgbTexture2d;
+macro_rules! define_texture_data {
+    ($x: ident) => {
+        // hacky, avoid lifetime issue
+        pub use glium::uniforms::UniformValue::$x as TextureUniform; 
+        pub type TextureData = ::glium::texture::$x;
+    }
+}
+
+
+define_texture_data! { CompressedSrgbTexture2d }
 
 
 pub struct Texture {

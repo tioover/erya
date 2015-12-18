@@ -44,18 +44,4 @@ pub mod shader;
 pub mod utils;
 
 
-use std::string::ToString;
-use glium::glutin::WindowBuilder;
-use glium::DisplayBuild;
-
-
-pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
-    where T: ToString
-{
-    WindowBuilder::new()
-        .with_title(title.to_string())
-        .with_dimensions(width, height)
-        .with_vsync()
-        .build_glium()
-        .unwrap()
-}
+pub use utils::{Ref, build_display};

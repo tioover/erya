@@ -17,19 +17,13 @@ fn main() {
     let camera = Camera2D::new(&display);
     let renderer = Renderer::new(&display);
     let textures = Manager::<Texture>::new(&display, "examples/assets");
-    let tex = textures.get("block.png");
-    let sprite = Sprite::new(tex.clone(), 128, 128);
+    let sprite = Sprite::new(textures.get("block.png"), 128, 128);
 
     'main: loop {
-
+        let camera = camera.matrix();
         let mut target = display.draw();
         target.clear_color(0.25, 0.25, 0.25, 0.0);
-        renderer.draw(&mut target, &sprite,
-            &erya::shader::Default {
-                texture: tex.clone(),
-                matrix: camera.matrix() * sprite.transform.matrix(),
-            }
-        );
+        renderer.render(&mut target, &camera, &sprite);
         target.finish().unwrap();
         for event in display.poll_events() {
             match event {

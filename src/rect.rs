@@ -1,6 +1,4 @@
 use num::NumCast;
-use na::Vec2;
-
 
 pub struct Rect {
     pub x: f32,
@@ -18,14 +16,5 @@ impl Rect {
             width: from!(w),
             height: from!(h)
         }
-    }
-
-
-    pub fn position(&self) -> Vec2<f32> {
-        Vec2::new(self.x, self.y)
-    }
-
-    pub fn size(&self) -> Vec2<f32> {
-        Vec2::new(self.width, self.height)
     }
 }
