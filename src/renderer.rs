@@ -4,6 +4,7 @@ use mesh::{Mesh, Polygon};
 use shader;
 use shader::Shader;
 use math::Matrix;
+use utils::Ref;
 
 
 pub struct Renderer<'display, S=shader::Default>
@@ -28,11 +29,17 @@ impl<'display, S: Shader> Renderer<'display, S> {
         }
     }
 
-    pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S)
+    pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S::Uniforms)
         where P: Polygon<S::Vertex>
     {
-        let &Mesh(ref vb, ref ib) = &*polygon.mesh(self.display);
-        target.draw(vb, ib, &self.program, uniforms, &self.params).unwrap();
+        let &Mesh(ref vertex_buffer, ref index_buffer) = &*polygon.mesh(self.display);
+        target.draw(
+            vertex_buffer,
+            index_buffer,
+            &self.program,
+            uniforms,
+            &self.params
+        ).unwrap();
     }
 
     pub fn render<R>(&self, target: &mut Frame, parent: &Matrix, renderable: &R)
@@ -51,5 +58,5 @@ impl<'display, S: Shader> Renderer<'display, S> {
 }
 
 pub trait Renderable<S: Shader>: Polygon<S::Vertex> {
-    fn uniforms<'a>(&'a self, parent: &Matrix) -> ::utils::Ref<'a, S>;
+    fn uniforms<'a>(&'a self, parent: &Matrix) -> Ref<'a, S::Uniforms>;
 }

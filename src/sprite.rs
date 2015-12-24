@@ -1,5 +1,6 @@
 use glium::Display;
 use std::rc::Rc;
+use num::NumCast;
 use texture::Texture;
 use mesh::{Mesh, Vertex, Polygon};
 use transform::Transform;
@@ -22,12 +23,12 @@ pub struct Sprite {
 
 
 impl Sprite {
-    pub fn new<N: ::num::NumCast>(tex: Rc<Texture>, width: N, height: N) -> Sprite {
+    pub fn new<N: NumCast>(tex: Rc<Texture>, width: N, height: N) -> Sprite {
         let rect = Rect::new(0, 0, tex.width, tex.height);
         Sprite::with_rect(tex, rect, width, height)
     }
 
-    pub fn with_rect<N: ::num::NumCast>(tex: Rc<Texture>, rect: Rect, width: N, height: N)
+    pub fn with_rect<N: NumCast>(tex: Rc<Texture>, rect: Rect, width: N, height: N)
         -> Sprite
     {
         Sprite {
@@ -39,7 +40,6 @@ impl Sprite {
             transform: Transform::new(),
         }
     }
-
 }
 
 impl Polygon<Vertex> for Sprite {
@@ -78,9 +78,11 @@ impl Polygon<Vertex> for Sprite {
 
 
 impl Renderable<shader::Default> for Sprite {
-    fn uniforms<'a>(&'a self, parent: &Matrix) -> Ref<'a, shader::Default> {
+    fn uniforms<'a>(&'a self, parent: &Matrix)
+        -> Ref<'a, shader::DefaultUniforms>
+    {
         Ref::Owned(
-            shader::Default {
+            shader::DefaultUniforms {
                 texture: self.texture.clone(),
                 matrix: *parent * self.transform.matrix(),
             }
