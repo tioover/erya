@@ -11,8 +11,8 @@ pub struct Id {
 impl Id {
     pub fn new() -> Id {
         Id {
-            time: time::now().to_timespec(),
             random: rand::random(),
+            time: time::now().to_timespec(),
         }
     }
 }
