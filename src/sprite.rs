@@ -42,6 +42,7 @@ impl Sprite {
     }
 }
 
+
 impl Polygon<Vertex> for Sprite {
     fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh<Vertex>> {
         use glium::index::PrimitiveType::TriangleStrip;

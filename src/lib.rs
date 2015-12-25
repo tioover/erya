@@ -31,7 +31,6 @@ pub use glium::Display;
 
 pub mod renderer;
 pub mod mesh;
-pub mod resource;
 pub mod texture;
 pub mod id;
 pub mod math;
@@ -42,6 +41,7 @@ pub mod transform;
 pub mod sprite;
 pub mod shader;
 pub mod utils;
+pub mod loader;
 
 
 pub use utils::{Ref, build_display};

@@ -1,7 +1,10 @@
-use id::Id;
-use glium::Display;
-use glium::texture::Texture2dDataSource;
+use std::path::Path;
 use std::cmp::{PartialEq, Eq};
+use image::{open, GenericImage};
+use glium::Display;
+use glium::texture::{Texture2dDataSource, RawImage2d};
+use id::Id;
+use loader::Resource;
 
 
 macro_rules! define_texture_data {
@@ -39,6 +42,7 @@ impl Texture {
 }
 
 
+impl Eq for Texture {}
 impl PartialEq<Texture> for Texture {
     fn eq(&self, other: &Texture) -> bool {
         self.id == other.id
@@ -46,5 +50,19 @@ impl PartialEq<Texture> for Texture {
 }
 
 
-impl Eq for Texture {}
+impl Resource for Texture {
+
+    type LoadData = RawImage2d<'static, u8>;
+
+    fn load<P>(path: P) -> Self::LoadData
+        where P: AsRef<Path>
+    {
+        let image = open(path).unwrap();
+        RawImage2d::from_raw_rgba_reversed(image.raw_pixels(), image.dimensions())
+    }
+
+    fn generate(display: &Display, data: Self::LoadData) -> Texture {
+        Texture::new(display, data)
+    }
+}
 

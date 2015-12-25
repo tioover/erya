@@ -3,21 +3,22 @@ extern crate erya;
 extern crate glium;
 
 
+use std::rc::Rc;
 use glium::glutin::Event;
 use glium::Surface;
 use erya::renderer::Renderer;
-use erya::resource::Manager;
+use erya::loader::Resource;
 use erya::texture::Texture;
 use erya::camera::Camera2D;
 use erya::sprite::Sprite;
 
 
 fn main() {
+    let texture = Texture::get("examples/assets/block.png");
     let display = erya::build_display("image", (800, 600));
     let camera = Camera2D::new(&display);
     let renderer = Renderer::new(&display);
-    let textures = Manager::<Texture>::new(&display, "examples/assets");
-    let sprite = Sprite::new(textures.get("block.png"), 128, 128);
+    let sprite = Sprite::new(Rc::new(texture.unwrap(&display)), 128, 128);
 
     'main: loop {
         let camera = camera.matrix();
