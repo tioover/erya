@@ -54,10 +54,10 @@ impl Resource for Texture {
 
     type LoadData = RawImage2d<'static, u8>;
 
-    fn load<P>(path: P) -> Self::LoadData
+    fn load<P>(path: &P) -> Self::LoadData
         where P: AsRef<Path>
     {
-        let image = open(path).unwrap();
+        let image = open(path.as_ref()).unwrap();
         RawImage2d::from_raw_rgba_reversed(image.raw_pixels(), image.dimensions())
     }
 
