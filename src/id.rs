@@ -3,8 +3,8 @@ use rand;
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub struct Id {
-    time: time::Timespec,
     random: u32,
+    time: time::Timespec,
 }
 
 
