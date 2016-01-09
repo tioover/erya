@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use glium::glutin::Event;
 use glium::Surface;
 use erya::renderer::Renderer;
-use erya::loader::{Queue, RecvState};
+use erya::loader::{Queue, QueueState};
 use erya::texture::Texture;
 use erya::camera::Camera2D;
 use erya::sprite::Sprite;
@@ -23,7 +23,7 @@ fn main() {
     'main: loop {
         let camera = camera.matrix();
         let mut target = display.draw();
-        if let RecvState::NotGot = queue.try_recv() {
+        if let QueueState::NotReceived = queue.try_recv() {
             target.clear_color(0.25, 0.25, 0.25, 0.0);
         }
         else {

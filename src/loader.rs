@@ -43,10 +43,10 @@ pub struct Queue<'display, T: Resource> {
 }
 
 
-pub enum RecvState {
+pub enum QueueState {
     Empty,
-    Got,
-    NotGot,
+    Received,
+    NotReceived,
 }
 
 
@@ -66,8 +66,10 @@ impl<'a, T: Resource> Queue<'a, T> {
         }
     }
 
-    pub fn try_recv(&mut self) -> RecvState {
-        if self.is_empty() { return RecvState::Empty }
+    pub fn try_recv(&mut self) -> QueueState {
+        if self.is_empty() {
+            return QueueState::Empty
+        }
         if let Ok((data, key)) = self.receiver.try_recv() {
             let data = T::generate(self.display, data);
             for i in 0..self.keys.len() {
@@ -77,10 +79,10 @@ impl<'a, T: Resource> Queue<'a, T> {
                 }
             }
             self.received.insert(key, Rc::new(data));
-            RecvState::Got
+            QueueState::Received
         }
         else {
-            RecvState::NotGot
+            QueueState::NotReceived
         }
     }
 
