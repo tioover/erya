@@ -28,8 +28,8 @@ impl Shader for Default {
     type Uniforms = DefaultUniforms;
 
     fn program(display: &Display) -> Program {
-        let vert = include_str!("shader/140/default.vert");
-        let frag = include_str!("shader/140/default.frag");
+        let vert = include_str!("shader/default.vert");
+        let frag = include_str!("shader/default.frag");
         program!(display,
             140 => {
                 vertex: vert,
