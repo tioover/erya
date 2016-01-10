@@ -1,7 +1,6 @@
 use glium::Display;
-use std::rc::Rc;
 use num::NumCast;
-use texture::Texture;
+use texture::TextureRef;
 use mesh::{Mesh, Vertex, Polygon};
 use transform::Transform;
 use rect::Rect;
@@ -14,7 +13,7 @@ use id::Id;
 
 pub struct Sprite {
     pub id: Id,
-    texture: Rc<Texture>,
+    texture: TextureRef,
     width: f32,
     height: f32,
     rect: Rect,
@@ -23,12 +22,12 @@ pub struct Sprite {
 
 
 impl Sprite {
-    pub fn new<N: NumCast>(tex: Rc<Texture>, width: N, height: N) -> Sprite {
+    pub fn new<N: NumCast>(tex: TextureRef, width: N, height: N) -> Sprite {
         let rect = Rect::new(0, 0, tex.width, tex.height);
         Sprite::with_rect(tex, rect, width, height)
     }
 
-    pub fn with_rect<N: NumCast>(tex: Rc<Texture>, rect: Rect, width: N, height: N)
+    pub fn with_rect<N: NumCast>(tex: TextureRef, rect: Rect, width: N, height: N)
         -> Sprite
     {
         Sprite {

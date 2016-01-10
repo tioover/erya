@@ -1,22 +1,15 @@
 use std::path::Path;
+use std::rc::Rc;
 use std::cmp::{PartialEq, Eq};
+use std::ops::Deref;
 use image::{open, GenericImage};
 use glium::Display;
 use glium::texture::{Texture2dDataSource, RawImage2d};
+use glium::uniforms::{AsUniformValue, UniformValue};
 use id::Id;
 use loader::Resource;
 
-
-macro_rules! define_texture_data {
-    ($x: ident) => {
-        // hacky, avoid lifetime issue
-        pub use glium::uniforms::UniformValue::$x as TextureUniform; 
-        pub type TextureData = ::glium::texture::$x;
-    }
-}
-
-
-define_texture_data! { CompressedSrgbTexture2d }
+pub type TextureData = ::glium::texture::CompressedSrgbTexture2d;
 
 
 pub struct Texture {
@@ -27,13 +20,47 @@ pub struct Texture {
 }
 
 
+#[derive(Clone)]
+pub struct TextureRef (pub Rc<Texture>);
+
+impl TextureRef {
+    pub fn new(tex: Texture) -> TextureRef {
+        TextureRef::from_rc(Rc::new(tex))
+    }
+
+    pub fn from_rc(tex: Rc<Texture>) -> TextureRef {
+        TextureRef(tex)
+    }
+}
+
+
+impl AsUniformValue for TextureRef {
+    fn as_uniform_value(&self) -> UniformValue {
+        UniformValue::CompressedSrgbTexture2d(&self.0.data, None)
+    }
+}
+
+
+impl Deref for TextureRef {
+    type Target = Texture;
+
+    fn deref(&self) -> &Texture {
+        self.0.deref()
+    }
+}
+
+
+
 impl Texture {
     pub fn new<'a, T>(display: &Display, source: T) -> Texture
             where T: Texture2dDataSource<'a>
     {
         let tex = TextureData::new(display, source).unwrap();
         Texture {
+            id: Id::new(),
+            width: tex.get_width(),
             height: tex.get_height().unwrap(),
+            data: tex,
         }
     }
 }

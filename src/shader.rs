@@ -1,7 +1,6 @@
-use std::rc::Rc;
 use glium::{Display, Program};
 use glium::uniforms::{Uniforms, UniformValue, AsUniformValue};
-use texture::{Texture, TextureUniform};
+use texture::TextureRef;
 use math::Matrix;
 use mesh::{Vertex, VertexType};
 
@@ -18,7 +17,7 @@ pub struct Default;
 
 
 pub struct DefaultUniforms {
-    pub texture: Rc<Texture>,
+    pub texture: TextureRef,
     pub matrix: Matrix,
 }
 
@@ -41,9 +40,11 @@ impl Shader for Default {
 
 
 impl Uniforms for DefaultUniforms {
-    fn visit_values<'a, F: FnMut(&str, UniformValue<'a>)>(&'a self, mut f: F) {
+    fn visit_values<'a, F>(&'a self, mut f: F)
+        where F: FnMut(&str, UniformValue<'a>)
+    {
         f("matrix", (*self.matrix.as_ref()).as_uniform_value());
-        f("tex", TextureUniform(&self.texture.data, None));
+        f("tex", self.texture.as_uniform_value());
     }
 }
 
