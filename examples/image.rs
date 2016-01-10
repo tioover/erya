@@ -8,8 +8,8 @@ use glium::glutin::Event;
 use glium::Surface;
 use erya::renderer::Renderer;
 use erya::loader::{Queue, QueueState};
-use erya::texture::Texture;
-use erya::camera::Camera2D;
+use erya::texture::{Texture, TextureRef};
+use erya::camera::{Camera, Camera2D};
 use erya::sprite::Sprite;
 
 
