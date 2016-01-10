@@ -10,7 +10,7 @@ pub type Key = PathBuf;
 
 
 pub trait Resource: Sized {
-    type LoadData: Send + 'static; 
+    type LoadData: Send + 'static;
 
     fn load<P: AsRef<Path>>(path: &P) -> Self::LoadData;
 

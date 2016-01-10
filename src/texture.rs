@@ -33,10 +33,7 @@ impl Texture {
     {
         let tex = TextureData::new(display, source).unwrap();
         Texture {
-            id    : Id::new(),
-            width : tex.get_width(),
             height: tex.get_height().unwrap(),
-            data  : tex,
         }
     }
 }

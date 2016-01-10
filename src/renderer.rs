@@ -1,13 +1,12 @@
 use std::marker::PhantomData;
 use glium::{Display, Program, DrawParameters, Frame, Surface};
 use mesh::{Mesh, Polygon};
-use shader;
 use shader::Shader;
 use math::Matrix;
 use utils::Ref;
 
 
-pub struct Renderer<'display, S=shader::Default>
+pub struct Renderer<'display, S>
     where S: Shader
 {
     pub display: &'display Display,
@@ -56,6 +55,7 @@ impl<'display, S: Shader> Renderer<'display, S> {
         }
     }
 }
+
 
 pub trait Renderable<S: Shader>: Polygon<S::Vertex> {
     fn uniforms<'a>(&'a self, parent: &Matrix) -> Ref<'a, S::Uniforms>;
