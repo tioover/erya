@@ -1,3 +1,4 @@
+#![feature(braced_empty_structs)]
 extern crate nalgebra;
 extern crate time;
 extern crate rand;
@@ -45,4 +46,3 @@ pub mod loader;
 
 
 pub use utils::{Ref, build_display};
-

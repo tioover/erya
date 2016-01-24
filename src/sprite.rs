@@ -83,8 +83,8 @@ impl Renderable<shader::Default> for Sprite {
     {
         Ref::Owned(
             shader::DefaultUniforms {
-                texture: self.texture.clone(),
-                matrix: *parent * self.transform.matrix(),
+                tex: self.texture.clone(),
+                matrix: (*parent * self.transform.matrix()).as_ref().clone(),
             }
         )
     }
