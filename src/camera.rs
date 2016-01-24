@@ -41,7 +41,7 @@ impl<'a> Camera for Camera2D<'a> {
 
 pub struct Camera3D<'display> {
     display: &'display Display,
-    transform: Transform, 
+    transform: Transform,
 }
 
 

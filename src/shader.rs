@@ -8,7 +8,17 @@ pub trait Shader {
     type Vertex: VertexType;
     type Uniforms: Uniforms;
 
-    fn program(&Display) -> Program;
+    fn vertex() -> &'static str;
+    fn fragment() -> &'static str;
+
+    fn program(display: &Display) -> Program {
+        program!(display,
+            140 => {
+                vertex: Self::vertex(),
+                fragment: Self::fragment(),
+            },
+        ).unwrap()
+    }
 }
 
 
@@ -19,15 +29,12 @@ impl Shader for Default {
     type Vertex = Vertex;
     type Uniforms = DefaultUniforms;
 
-    fn program(display: &Display) -> Program {
-        let vert = include_str!("shader/default.vert");
-        let frag = include_str!("shader/default.frag");
-        program!(display,
-            140 => {
-                vertex: vert,
-                fragment: frag,
-            },
-        ).unwrap()
+    fn vertex() -> &'static str {
+        include_str!("shader/default.vert")
+    }
+
+    fn fragment() -> &'static str {
+        include_str!("shader/default.frag")
     }
 }
 
