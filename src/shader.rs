@@ -1,5 +1,5 @@
 use glium::{Display, Program};
-use glium::uniforms::{Uniforms, UniformValue, AsUniformValue};
+pub use glium::uniforms::{Uniforms, UniformValue, AsUniformValue};
 use texture::TextureRef;
 use mesh::{Vertex, VertexType};
 
@@ -41,10 +41,11 @@ macro_rules! uniforms_define {
             )*
         }
 
-        impl $crate::glium::uniforms::Uniforms for $struct_name {
+        impl $crate::shader::Uniforms for $struct_name {
             fn visit_values<'a, F>(&'a self, mut output: F)
-                where F: FnMut(&str, UniformValue<'a>)
+                where F: FnMut(&str, $crate::shader::UniformValue<'a>)
             {
+                use $crate::shader::AsUniformValue;
                 $(
                     output(stringify!($field), self.$field.as_uniform_value());
                 )*
