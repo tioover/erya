@@ -1,36 +1,13 @@
 use std::ops::{Add, Sub, Mul};
 use num;
 use num::Float;
-use na::{Vec2, Vec3, Vec4, Mat4, Rot2, Diag};
+use cgmath::{Vector2, BaseFloat};
 
-
-pub type Matrix = Mat4<f32>;
 
 pub const ROUND: f32 = 6.28318530717958647692528676655900576;
 
-#[inline]
-pub fn scaling(factor: f32) -> Matrix {
-    Mat4::from_diag(&Vec4::new(factor, factor, factor, 1.0))
-}
 
-
-#[inline]
-pub fn translation(v: Vec3<f32>) -> Matrix {
-    Mat4::new(
-        1.0, 0.0, 0.0, v.x,
-        0.0, 1.0, 0.0, v.y,
-        0.0, 0.0, 1.0, v.z,
-        0.0, 0.0, 0.0, 1.0)
-}
-
-
-#[inline]
-pub fn rotation(t: f32) -> Rot2<f32> {
-    Rot2::new(na![t * ROUND])
-}
-
-
-pub fn curve<F: Float>(control: [Vec2<F>; 4], t: F) -> Vec2<F> {
+pub fn curve<F: BaseFloat>(control: [Vector2<F>; 4], t: F) -> Vector2<F> {
     // Cubic Bézier curves
 
     macro_rules! cast (

@@ -7,7 +7,7 @@ use rect::Rect;
 use utils::Ref;
 use renderer::Renderable;
 use shader;
-use math::Matrix;
+use cgmath::Matrix4;
 use id::Id;
 
 
@@ -78,13 +78,13 @@ impl Polygon<Vertex> for Sprite {
 
 
 impl Renderable<shader::Default> for Sprite {
-    fn uniforms<'a>(&'a self, parent: &Matrix)
+    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>)
         -> Ref<'a, shader::DefaultUniforms>
     {
         Ref::Owned(
             shader::DefaultUniforms {
                 tex: self.texture.clone(),
-                matrix: (*parent * self.transform.matrix()).as_ref().clone(),
+                matrix: (parent * self.transform.matrix()).into(),
             }
         )
     }

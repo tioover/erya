@@ -1,10 +1,9 @@
-#[macro_use(uniforms_define)]
+#[macro_use(implement_uniforms)]
 extern crate erya;
-#[macro_use]
+#[macro_use(implement_vertex)]
 extern crate glium;
+extern crate cgmath;
 
-
-use std::default::Default;
 use glium::glutin::Event;
 use glium::Surface;
 use glium::index::PrimitiveType::TrianglesList;
@@ -19,14 +18,14 @@ struct Vertex {
     color: [f32; 3],
 }
 
-implement_vertex!(Vertex, position, color);
+implement_vertex! {Vertex, position, color}
 
 
-uniforms_define! {
-    Uniforms {
-        matrix: [[f32; 4]; 4],
-    }
+struct Uniforms {
+    mat: [[f32; 4]; 4],
 }
+
+implement_uniforms! {Uniforms, mat}
 
 
 struct Shader;
@@ -39,13 +38,13 @@ impl erya::shader::Shader for Shader {
     fn vertex() -> &'static str {
         "
         #version 140
-        uniform mat4 matrix;
+        uniform mat4 mat;
         in vec2 position;
         in vec3 color;
         out vec3 vColor;
 
         void main() {
-            gl_Position = vec4(position, 0.0, 1.0) * matrix;
+            gl_Position = mat * vec4(position, 0.0, 1.0);
             vColor = color;
         }
         "
@@ -67,30 +66,25 @@ impl erya::shader::Shader for Shader {
 fn main() {
     let display = erya::build_display("triangle", (800, 600));
     let renderer = Renderer::<Shader>::new(&display);
-    let camera = Camera3D::new(&display);
+    let mut camera = Camera3D::new(&display);
+    camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
     let mesh = {
         let vb = VertexBuffer::new(&display, &[
-            Vertex { position: [-0.5, -0.5], color: [0.0, 1.0, 0.0] },
-            Vertex { position: [ 0.0,  0.5], color: [0.0, 0.0, 1.0] },
-            Vertex { position: [ 0.5, -0.5], color: [1.0, 0.0, 0.0] },
+            Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
+            Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
+            Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
         ]).unwrap();
         let ib = IndexBuffer::new(&display, TrianglesList, &[0, 1, 2]).unwrap();
         Mesh(vb, ib)
     };
 
-    let uniforms = Uniforms {
-        matrix: [
-            [1.0, 0.0, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.0],
-            [0.0, 0.0, 1.0, 0.0],
-            [0.0, 0.0, 0.0, 1.0]
-        ]
-    };
-
     'main: loop {
-        // let camera = camera.matrix();
         let mut target = display.draw();
-        target.clear_color(0.25, 0.25, 0.25, 0.0);
+
+        let uniforms = Uniforms {
+            mat: camera.matrix().into(),
+        };
+        target.clear_color_and_depth((0.0, 0.0, 0.0, 0.0), 1.0);
         renderer.draw(&mut target, &mesh, &uniforms);
         target.finish().unwrap();
         for event in display.poll_events() {

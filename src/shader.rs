@@ -38,17 +38,10 @@ impl Shader for Default {
     }
 }
 
-
 #[macro_export]
-macro_rules! uniforms_define {
-    ($struct_name:ident {$($field:ident: $t:ty),*}) => {
-        pub struct $struct_name {
-            $(
-                pub $field: $t,
-            )*
-        }
-
-        impl $crate::shader::Uniforms for $struct_name {
+macro_rules! implement_uniforms {
+    ($name: ident, $($field: ident),*) => {
+        impl $crate::shader::Uniforms for $name {
             fn visit_values<'a, F>(&'a self, mut output: F)
                 where F: FnMut(&str, $crate::shader::UniformValue<'a>)
             {
@@ -58,17 +51,15 @@ macro_rules! uniforms_define {
                 )*
             }
         }
-    };
-    ($struct_name:ident {$($field:ident: $t:ty),*,}) => {
-        uniforms_define! { $struct_name {$($field: $t),*} }
     }
 }
 
 
-uniforms_define! {
-    DefaultUniforms {
-        tex: TextureRef,
-        matrix: [[f32; 4]; 4],
-    }
+
+pub struct DefaultUniforms {
+    pub tex: TextureRef,
+    pub matrix: [[f32; 4]; 4],
 }
+
+implement_uniforms! {DefaultUniforms, tex, matrix}
 

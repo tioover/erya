@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
+use cgmath::Matrix4;
 use glium::{Display, Program, DrawParameters, Frame, Surface};
 use mesh::{Mesh, Polygon};
 use shader::Shader;
-use math::Matrix;
 use utils::Ref;
 
 
@@ -41,7 +41,7 @@ impl<'display, S: Shader> Renderer<'display, S> {
         ).unwrap();
     }
 
-    pub fn render<R>(&self, target: &mut Frame, parent: &Matrix, renderable: &R)
+    pub fn render<R>(&self, target: &mut Frame, parent: &Matrix4<f32>, renderable: &R)
         where R: Renderable<S>
     {
         let uniforms = renderable.uniforms(parent);
@@ -58,5 +58,5 @@ impl<'display, S: Shader> Renderer<'display, S> {
 
 
 pub trait Renderable<S: Shader>: Polygon<S::Vertex> {
-    fn uniforms<'a>(&'a self, parent: &Matrix) -> Ref<'a, S::Uniforms>;
+    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> Ref<'a, S::Uniforms>;
 }
