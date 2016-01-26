@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
-use mesh::{ Mesh, Polygon };
+use mesh::Polygon;
 use shader::Shader;
 use utils::Ref;
 
@@ -34,10 +34,18 @@ impl<'display, S: Shader> Renderer<'display, S>
     pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S::Uniforms)
         where P: Polygon<S::Vertex>
     {
-        let &Mesh(ref vertex_buffer, ref index_buffer) = &*polygon.mesh(self.display);
+        use glium::index::IndicesSource;
+        use either::{ Left, Right };
+
+        let mesh = polygon.mesh();
+        let indices: IndicesSource = match mesh.indices
+        {
+            Left(ref x) => x.into(),
+            Right(ref x) => x.into(),
+        };
         target.draw(
-            vertex_buffer,
-            index_buffer,
+            &mesh.verties,
+            indices,
             &self.program,
             uniforms,
             &self.params

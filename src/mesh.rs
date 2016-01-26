@@ -1,40 +1,58 @@
 use glium;
 use glium::Display;
-use utils::Ref;
+use glium::index::{ PrimitiveType, NoIndices };
+use either::Either;
 
 pub use glium::VertexBuffer;
 pub use glium::Vertex as VertexType;
 
 
-pub type IndexBuffer = glium::IndexBuffer<u16>;
+pub type Index = u16;
+pub type IndexBuffer = glium::IndexBuffer<Index>;
 
 
-#[derive(Copy, Clone)]
-pub struct Vertex
+pub struct Mesh<T: VertexType>
 {
-    pub position: [f32; 2],
-    pub tex_coords: [f32; 2],
+    pub verties: VertexBuffer<T>,
+    pub indices: Either<IndexBuffer, NoIndices>,
 }
 
 
-implement_vertex!{ Vertex, position, tex_coords }
-
-
-pub struct Mesh<V: VertexType>(pub VertexBuffer<V>, pub IndexBuffer);
-
-
-pub trait Polygon<V: VertexType>
+impl<T: VertexType> Mesh<T>
 {
-    fn mesh<'a>(&'a self, &Display) -> Ref<'a, Mesh<V>>;
-}
-
-
-impl<V> Polygon<V> for Mesh<V>
-    where V: VertexType
-{
-    fn mesh<'a>(&'a self, _: &Display) -> Ref<'a, Mesh<V>>
+    pub fn new(display: &Display, verties: &[T]) -> Mesh<T>
     {
-        Ref::Borrowed(self)
+        Mesh
+        {
+            verties: VertexBuffer::new(display, verties).unwrap(),
+            indices: Either::Right(NoIndices(PrimitiveType::TrianglesList)),
+        }
+    }
+
+
+    pub fn with_indices(display: &Display, verties: &[T], index: &[Index]) -> Mesh<T>
+    {
+        Mesh
+        {
+            verties: VertexBuffer::new(display, verties).unwrap(),
+            indices: Either::Left(IndexBuffer::new(display, PrimitiveType::TrianglesList, index).unwrap()),
+        }
+    }
+}
+
+
+pub trait Polygon<T: VertexType>
+{
+    fn mesh<'a>(&'a self) -> &'a Mesh<T>;
+}
+
+
+impl<T> Polygon<T> for Mesh<T>
+    where T: VertexType
+{
+    fn mesh<'a>(&'a self) -> &'a Mesh<T>
+    {
+        self
     }
 }
 

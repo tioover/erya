@@ -10,6 +10,7 @@ pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
 {
     WindowBuilder::new()
         .with_title(title.to_string())
+        .with_multisampling(4)
         .with_dimensions(width, height)
         .with_vsync()
         .build_glium()

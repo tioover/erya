@@ -6,10 +6,9 @@ extern crate cgmath;
 
 use glium::glutin::Event;
 use glium::Surface;
-use glium::index::PrimitiveType::TrianglesList;
 use erya::renderer::Renderer;
 use erya::camera::{ Camera3D, Camera };
-use erya::mesh::{ IndexBuffer, VertexBuffer, Mesh };
+use erya::mesh::Mesh;
 
 
 #[derive(Copy, Clone)]
@@ -74,16 +73,11 @@ fn main()
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
-    let mesh =
-        {
-            let vb = VertexBuffer::new(&display, &[
-                Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
-                Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
-                Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
-            ]).unwrap();
-            let ib = IndexBuffer::new(&display, TrianglesList, &[0, 1, 2]).unwrap();
-            Mesh(vb, ib)
-        };
+    let mesh = Mesh::new(&display, &[
+            Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
+            Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
+            Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
+        ]);
 
     'main: loop {
         let mut target = display.draw();

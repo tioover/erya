@@ -1,14 +1,54 @@
 use glium::Display;
 use num::NumCast;
 use texture::TextureRef;
-use mesh::{ Mesh, Vertex, Polygon };
+use mesh::{ Mesh, Polygon };
 use transform::Transform;
 use rect::Rect;
 use utils::{ Ref, cast };
 use renderer::Renderable;
-use shader;
 use cgmath::Matrix4;
 use id::Id;
+
+
+#[derive(Copy, Clone)]
+pub struct Vertex
+{
+    pub position: [f32; 2],
+    pub texture_position: [u32; 2],
+}
+
+
+implement_vertex!{ Vertex, position, texture_position }
+
+
+pub struct Shader;
+
+
+impl ::shader::Shader for Shader
+{
+    type Vertex = Vertex;
+    type Uniforms = Uniforms;
+
+    fn vertex() -> &'static str
+    {
+        include_str!("shader/sprite.vert")
+    }
+
+    fn fragment() -> &'static str
+    {
+        include_str!("shader/sprite.frag")
+    }
+}
+
+
+pub struct Uniforms
+{
+    pub matrix: [[f32; 4]; 4],
+    pub image: TextureRef,
+}
+
+
+implement_uniforms! { Uniforms, matrix, image }
 
 
 pub struct Sprite
@@ -18,80 +58,74 @@ pub struct Sprite
     width: f32,
     height: f32,
     rect: Rect,
+    mesh: Mesh<Vertex>,
     pub transform: Transform,
 }
 
 
 impl Sprite
 {
-    pub fn new<N: NumCast>(tex: TextureRef, width: N, height: N) -> Sprite
+    pub fn new<N>(display: &Display, tex: TextureRef, width: N, height: N) -> Sprite
+        where N: NumCast + Clone
     {
         let rect = Rect::new(0, 0, tex.width, tex.height);
-        Sprite::with_rect(tex, rect, width, height)
+        Sprite::with_rect(display, tex, rect, width, height)
     }
 
-    pub fn with_rect<N: NumCast>(tex: TextureRef, rect: Rect, width: N, height: N)
-        -> Sprite
+    pub fn with_rect<N>(display: &Display, tex: TextureRef,
+                        rect: Rect, width: N, height: N) -> Sprite
+        where N: NumCast + Clone
     {
         Sprite
         {
             id: Id::new(),
             texture: tex,
-            rect: rect,
-            width: cast(width),
-            height: cast(height),
+            width: cast(width.clone()),
+            height: cast(height.clone()),
             transform: Transform::new(),
+            mesh: Sprite::build_mesh(display, cast(width), cast(height), &rect),
+            rect: rect,
         }
+    }
+
+    fn build_mesh(display: &Display, width: f32, height: f32, rect: &Rect)
+        -> Mesh<Vertex>
+    {
+        let x = rect.x;
+        let y = rect.y;
+        let w = rect.width;
+        let h = rect.height;
+        let verties = [
+            Vertex { position: [  0.0, height], texture_position: [x, y+h] },
+            Vertex { position: [  0.0,    0.0], texture_position: [x, y] },
+            Vertex { position: [width,    0.0], texture_position: [x+w, y] },
+            Vertex { position: [width, height], texture_position: [x+w,y+h] },
+        ];
+
+        Mesh::with_indices(display, &verties, &[0, 1, 2, 2, 3, 0])
     }
 }
 
 
 impl Polygon<Vertex> for Sprite
 {
-    fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh<Vertex>>
+    fn mesh<'a>(&'a self) -> &'a Mesh<Vertex>
     {
-        use glium::index::PrimitiveType::TriangleStrip;
-        use mesh::{VertexBuffer, IndexBuffer};
-
-        let a = self.width;
-        let b = self.height;
-
-        let width = self.texture.width as f32;
-        let height = self.texture.height as f32;
-
-
-        let p = self.rect.x / width;
-        let q = self.rect.y / height;
-        let r = (self.rect.x + self.rect.width) / width;
-        let s = (self.rect.y + self.rect.height) / height;
-
-        let verties = [
-            Vertex { position: [0.0,   b], tex_coords: [p, 1.0-s] },
-            Vertex { position: [0.0, 0.0], tex_coords: [p, 1.0-q] },
-            Vertex { position: [  a, 0.0], tex_coords: [r, 1.0-q] },
-            Vertex { position: [  a,   b], tex_coords: [r, 1.0-s] },
-        ];
-        let index = [1, 2, 0, 3];
-        Ref::Owned(
-            Mesh(
-                VertexBuffer::new(display, &verties).unwrap(),
-                IndexBuffer::new(display, TriangleStrip, &index).unwrap(),
-            )
-        )
+        &self.mesh
     }
 }
 
 
 
-impl Renderable<shader::Default> for Sprite
+impl Renderable<Shader> for Sprite
 {
     fn uniforms<'a>(&'a self, parent: &Matrix4<f32>)
-        -> Ref<'a, shader::DefaultUniforms>
+        -> Ref<'a, Uniforms>
     {
         Ref::Owned(
-            shader::DefaultUniforms
+            Uniforms
             {
-                tex: self.texture.clone(),
+                image: self.texture.clone(),
                 matrix: (parent * self.transform.matrix()).into(),
             }
         )

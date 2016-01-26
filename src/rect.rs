@@ -4,10 +4,10 @@ use utils::cast;
 
 pub struct Rect
 {
-    pub x: f32,
-    pub y: f32,
-    pub width: f32,
-    pub height: f32,
+    pub x: u32,
+    pub y: u32,
+    pub width: u32,
+    pub height: u32,
 }
 
 

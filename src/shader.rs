@@ -1,7 +1,6 @@
 use glium::{ Display, Program };
 pub use glium::uniforms::{ Uniforms, UniformValue, AsUniformValue };
-use texture::TextureRef;
-use mesh::{ Vertex, VertexType };
+use mesh::VertexType;
 
 
 pub trait Shader
@@ -25,25 +24,6 @@ pub trait Shader
 }
 
 
-pub struct Default;
-
-
-impl Shader for Default
-{
-    type Vertex = Vertex;
-    type Uniforms = DefaultUniforms;
-
-    fn vertex() -> &'static str
-    {
-        include_str!("shader/default.vert")
-    }
-
-    fn fragment() -> &'static str
-    {
-        include_str!("shader/default.frag")
-    }
-}
-
 #[macro_export]
 macro_rules! implement_uniforms
 {
@@ -61,14 +41,3 @@ macro_rules! implement_uniforms
         }
     }
 }
-
-
-
-pub struct DefaultUniforms
-{
-    pub tex: TextureRef,
-    pub matrix: [[f32; 4]; 4],
-}
-
-implement_uniforms! { DefaultUniforms, tex, matrix }
-

@@ -33,7 +33,7 @@ fn main()
         {
             target.clear_color(0.0, 0.0, 0.0, 0.0);
             let tex = TextureRef::from_rc(queue.received[&res_key].clone());
-            let sprite = Sprite::new(tex, 128, 128);
+            let sprite = Sprite::new(&display, tex, 128, 128);
             renderer.render(&mut target, &camera, &sprite);
         }
         target.finish().unwrap();
