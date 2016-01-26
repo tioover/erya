@@ -25,16 +25,12 @@ pub struct Texture
 #[derive(Clone)]
 pub struct TextureRef(pub Rc<Texture>);
 
+
 impl TextureRef
 {
     pub fn new(tex: Texture) -> TextureRef
     {
-        TextureRef::from_rc(Rc::new(tex))
-    }
-
-    pub fn from_rc(tex: Rc<Texture>) -> TextureRef
-    {
-        TextureRef(tex)
+        TextureRef(Rc::new(tex))
     }
 }
 
