@@ -8,34 +8,38 @@ use glium::glutin::Event;
 use glium::Surface;
 use glium::index::PrimitiveType::TrianglesList;
 use erya::renderer::Renderer;
-use erya::camera::{Camera3D, Camera};
-use erya::mesh::{IndexBuffer, VertexBuffer, Mesh};
+use erya::camera::{ Camera3D, Camera };
+use erya::mesh::{ IndexBuffer, VertexBuffer, Mesh };
 
 
 #[derive(Copy, Clone)]
-struct Vertex {
+struct Vertex
+{
     position: [f32; 2],
     color: [f32; 3],
 }
 
-implement_vertex! {Vertex, position, color}
+implement_vertex! { Vertex, position, color }
 
 
-struct Uniforms {
+struct Uniforms
+{
     mat: [[f32; 4]; 4],
 }
 
-implement_uniforms! {Uniforms, mat}
+implement_uniforms! { Uniforms, mat }
 
 
 struct Shader;
 
 
-impl erya::shader::Shader for Shader {
+impl erya::shader::Shader for Shader
+{
     type Vertex = Vertex;
     type Uniforms = Uniforms;
 
-    fn vertex() -> &'static str {
+    fn vertex() -> &'static str
+    {
         "
         #version 140
         uniform mat4 mat;
@@ -50,7 +54,8 @@ impl erya::shader::Shader for Shader {
         "
     }
 
-    fn fragment() -> &'static str {
+    fn fragment() -> &'static str
+    {
         "
         #version 140
         in vec3 vColor;
@@ -63,32 +68,34 @@ impl erya::shader::Shader for Shader {
 }
 
 
-fn main() {
+fn main()
+{
     let display = erya::build_display("triangle", (800, 600));
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
-    let mesh = {
-        let vb = VertexBuffer::new(&display, &[
-            Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
-            Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
-            Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
-        ]).unwrap();
-        let ib = IndexBuffer::new(&display, TrianglesList, &[0, 1, 2]).unwrap();
-        Mesh(vb, ib)
-    };
+    let mesh =
+        {
+            let vb = VertexBuffer::new(&display, &[
+                Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
+                Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
+                Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
+            ]).unwrap();
+            let ib = IndexBuffer::new(&display, TrianglesList, &[0, 1, 2]).unwrap();
+            Mesh(vb, ib)
+        };
 
     'main: loop {
         let mut target = display.draw();
 
-        let uniforms = Uniforms {
-            mat: camera.matrix().into(),
-        };
+        let uniforms = Uniforms { mat: camera.matrix().into() };
         target.clear_color_and_depth((0.0, 0.0, 0.0, 0.0), 1.0);
         renderer.draw(&mut target, &mesh, &uniforms);
         target.finish().unwrap();
-        for event in display.poll_events() {
-            match event {
+        for event in display.poll_events()
+        {
+            match event
+            {
                 Event::Closed => break 'main,
                 _ => (),
             }

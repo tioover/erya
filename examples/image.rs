@@ -7,34 +7,40 @@ use std::path::PathBuf;
 use glium::glutin::Event;
 use glium::Surface;
 use erya::renderer::Renderer;
-use erya::loader::{Queue, QueueState};
-use erya::texture::{Texture, TextureRef};
-use erya::camera::{Camera, Camera2D};
+use erya::loader::{ Queue, QueueState };
+use erya::texture::{ Texture, TextureRef };
+use erya::camera::{ Camera, Camera2D };
 use erya::sprite::Sprite;
 
 
-fn main() {
+fn main()
+{
     let display = erya::build_display("image", (800, 600));
     let res_key = PathBuf::from("examples/assets/block.png");
     let mut queue = Queue::<Texture>::new(&display, vec![res_key.clone()]);
     let camera = Camera2D::new(&display);
     let renderer = Renderer::new(&display);
 
-    'main: loop {
+    'main: loop
+    {
         let camera = camera.matrix();
         let mut target = display.draw();
-        if let QueueState::NotReceived = queue.try_recv() {
+        if let QueueState::NotReceived = queue.try_recv()
+        {
             target.clear_color(0.25, 0.25, 0.25, 0.0);
         }
-        else {
+        else
+        {
             target.clear_color(0.0, 0.0, 0.0, 0.0);
             let tex = TextureRef::from_rc(queue.received[&res_key].clone());
             let sprite = Sprite::new(tex, 128, 128);
             renderer.render(&mut target, &camera, &sprite);
         }
         target.finish().unwrap();
-        for event in display.poll_events() {
-            match event {
+        for event in display.poll_events()
+        {
+            match event
+            {
                 Event::Closed => break 'main,
                 _ => (),
             }

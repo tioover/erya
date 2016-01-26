@@ -8,11 +8,6 @@ extern crate num;
 extern crate glium;
 
 
-macro_rules! from {
-    ($x: expr) => ($crate::num::NumCast::from($x).unwrap())
-}
-
-
 pub use glium::Display;
 
 
@@ -31,4 +26,4 @@ pub mod utils;
 pub mod loader;
 
 
-pub use utils::{Ref, build_display};
+pub use utils::{ Ref, build_display };

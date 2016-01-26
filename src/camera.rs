@@ -1,21 +1,26 @@
 use glium::Display;
-use cgmath::{Matrix, Matrix4, PerspectiveFov, Rad, Deg, deg, Point3, vec3};
+use cgmath::{ Matrix, Matrix4, PerspectiveFov, Rad, Deg, deg, Point3, vec3 };
 use transform::Transform;
 
 
-pub trait Camera {
+pub trait Camera
+{
     fn matrix(&self) -> Matrix4<f32>;
 }
 
-pub struct Camera2D<'display> {
+pub struct Camera2D<'display>
+{
     display: &'display Display,
     transform: Transform,
 }
 
 
-impl<'display> Camera2D<'display> {
-    pub fn new(display: &'display Display) -> Camera2D<'display> {
-        Camera2D {
+impl<'display> Camera2D<'display>
+{
+    pub fn new(display: &'display Display) -> Camera2D<'display>
+    {
+        Camera2D
+        {
             display: display,
             transform: Transform::new(),
         }
@@ -23,8 +28,10 @@ impl<'display> Camera2D<'display> {
 }
 
 
-impl<'a> Camera for Camera2D<'a> {
-    fn matrix(&self) -> Matrix4<f32> {
+impl<'a> Camera for Camera2D<'a>
+{
+    fn matrix(&self) -> Matrix4<f32>
+    {
         let factor = self.display.get_window().unwrap().hidpi_factor();
         let (w, h) = self.display.get_framebuffer_dimensions();
         let (w, h) = (w as f32, h as f32);
@@ -34,12 +41,13 @@ impl<'a> Camera for Camera2D<'a> {
             0.0, -f/h,  0.0,  1.0,
             0.0,  0.0, -1.0,  0.0,
             0.0,  0.0,  0.0,  1.0,
-        ).transpose() * self.transform.matrix() // TODO: optimization
+        ).transpose() * self.transform.matrix()
     }
 }
 
 
-pub struct Camera3D<'display> {
+pub struct Camera3D<'display>
+{
     display: &'display Display,
     pub pov: Deg<f32>,
     pub near: f32,
@@ -49,9 +57,12 @@ pub struct Camera3D<'display> {
 }
 
 
-impl<'display> Camera3D<'display> {
-    pub fn new(display: &'display Display) -> Camera3D<'display> {
-        Camera3D {
+impl<'display> Camera3D<'display>
+{
+    pub fn new(display: &'display Display) -> Camera3D<'display>
+    {
+        Camera3D
+        {
             display: display,
             pov: deg(45.0),
             near: 0.1,
@@ -61,28 +72,35 @@ impl<'display> Camera3D<'display> {
         }
     }
 
-    pub fn pov(self, pov: f32) -> Camera3D<'display> {
+    pub fn pov(self, pov: f32) -> Camera3D<'display>
+    {
         Camera3D { pov: deg(pov), ..self }
     }
 
-    pub fn near(self, near: f32) -> Camera3D<'display> {
+    pub fn near(self, near: f32) -> Camera3D<'display>
+    {
         Camera3D { near: near, ..self }
     }
 
-    pub fn far(self, far: f32) -> Camera3D<'display> {
+    pub fn far(self, far: f32) -> Camera3D<'display>
+    {
         Camera3D { far: far, ..self }
     }
 
-    fn aspect(&self) -> f32 {
+    fn aspect(&self) -> f32
+    {
         let (w, h) = self.display.get_framebuffer_dimensions();
         w as f32 / h as f32
     }
 }
 
 
-impl<'a> Camera for Camera3D<'a> {
-    fn matrix(&self) -> Matrix4<f32> {
-        let persp = PerspectiveFov {
+impl<'a> Camera for Camera3D<'a>
+{
+    fn matrix(&self) -> Matrix4<f32>
+    {
+        let persp = PerspectiveFov
+        {
             fovy: Rad::from(self.pov),
             aspect: self.aspect(),
             near: self.near,

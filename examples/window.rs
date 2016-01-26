@@ -6,15 +6,19 @@ use glium::Surface;
 use glium::glutin::Event;
 
 
-fn main() {
-    let display = erya::build_display("Window", (800, 600));
+fn main()
+{
+    let display = erya::build_display("window", (800, 600));
 
-    'main: loop {
+    'main: loop
+    {
         let mut target = display.draw();
         target.clear_color(0.0, 0.0, 0.0, 0.0);
         target.finish().unwrap();
-        for event in display.poll_events() {
-            match event {
+        for event in display.poll_events()
+        {
+            match event
+            {
                 Event::Closed => break 'main,
                 _ => (),
             }

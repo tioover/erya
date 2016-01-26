@@ -1,7 +1,8 @@
 use std::ops::Deref;
 use std::string::ToString;
+use num::NumCast;
 use glium::glutin::WindowBuilder;
-use glium::{Display, DisplayBuild};
+use glium::{ Display, DisplayBuild };
 
 
 pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
@@ -16,13 +17,15 @@ pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
 }
 
 
-pub enum Ref<'a, B> where B: 'a {
+pub enum Ref<'a, B> where B: 'a
+{
     Borrowed(&'a B),
     Owned(B),
 }
 
 
-impl<'a, B> Deref for Ref<'a, B> where B: 'a {
+impl<'a, B> Deref for Ref<'a, B> where B: 'a
+{
     type Target = B;
     fn deref(&self) -> &B {
         match self {
@@ -31,4 +34,14 @@ impl<'a, B> Deref for Ref<'a, B> where B: 'a {
         }
     }
 }
+
+
+
+#[inline]
+pub fn cast<T, U>(x: T) -> U
+    where T: NumCast, U: NumCast
+{
+    U::from(x).unwrap()
+}
+
 

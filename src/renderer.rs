@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 use cgmath::Matrix4;
-use glium::{Display, Program, DrawParameters, Frame, Surface};
-use mesh::{Mesh, Polygon};
+use glium::{ Display, Program, DrawParameters, Frame, Surface };
+use mesh::{ Mesh, Polygon };
 use shader::Shader;
 use utils::Ref;
 
@@ -17,10 +17,13 @@ pub struct Renderer<'display, S>
 
 
 
-impl<'display, S: Shader> Renderer<'display, S> {
-    pub fn new(display: &'display Display) -> Renderer<'display, S> {
+impl<'display, S: Shader> Renderer<'display, S>
+{
+    pub fn new(display: &'display Display) -> Renderer<'display, S>
+    {
         let program = S::program(display);
-        Renderer {
+        Renderer
+        {
             display: display,
             program: program,
             params: Renderer::<S>::build_params(),
@@ -48,8 +51,10 @@ impl<'display, S: Shader> Renderer<'display, S> {
         self.draw(target, renderable, &*uniforms);
     }
 
-    fn build_params<'a>() -> DrawParameters<'a> {
-        DrawParameters {
+    fn build_params<'a>() -> DrawParameters<'a>
+    {
+        DrawParameters
+        {
             blend: ::glium::Blend::alpha_blending(),
             ..::std::default::Default::default()
         }
@@ -57,6 +62,7 @@ impl<'display, S: Shader> Renderer<'display, S> {
 }
 
 
-pub trait Renderable<S: Shader>: Polygon<S::Vertex> {
+pub trait Renderable<S: Shader>: Polygon<S::Vertex>
+{
     fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> Ref<'a, S::Uniforms>;
 }

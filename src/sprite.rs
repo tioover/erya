@@ -1,17 +1,18 @@
 use glium::Display;
 use num::NumCast;
 use texture::TextureRef;
-use mesh::{Mesh, Vertex, Polygon};
+use mesh::{ Mesh, Vertex, Polygon };
 use transform::Transform;
 use rect::Rect;
-use utils::Ref;
+use utils::{ Ref, cast };
 use renderer::Renderable;
 use shader;
 use cgmath::Matrix4;
 use id::Id;
 
 
-pub struct Sprite {
+pub struct Sprite
+{
     pub id: Id,
     texture: TextureRef,
     width: f32,
@@ -21,8 +22,10 @@ pub struct Sprite {
 }
 
 
-impl Sprite {
-    pub fn new<N: NumCast>(tex: TextureRef, width: N, height: N) -> Sprite {
+impl Sprite
+{
+    pub fn new<N: NumCast>(tex: TextureRef, width: N, height: N) -> Sprite
+    {
         let rect = Rect::new(0, 0, tex.width, tex.height);
         Sprite::with_rect(tex, rect, width, height)
     }
@@ -30,20 +33,23 @@ impl Sprite {
     pub fn with_rect<N: NumCast>(tex: TextureRef, rect: Rect, width: N, height: N)
         -> Sprite
     {
-        Sprite {
+        Sprite
+        {
             id: Id::new(),
             texture: tex,
             rect: rect,
-            width: from!(width),
-            height: from!(height),
+            width: cast(width),
+            height: cast(height),
             transform: Transform::new(),
         }
     }
 }
 
 
-impl Polygon<Vertex> for Sprite {
-    fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh<Vertex>> {
+impl Polygon<Vertex> for Sprite
+{
+    fn mesh<'a>(&'a self, display: &Display) -> Ref<'a, Mesh<Vertex>>
+    {
         use glium::index::PrimitiveType::TriangleStrip;
         use mesh::{VertexBuffer, IndexBuffer};
 
@@ -67,7 +73,7 @@ impl Polygon<Vertex> for Sprite {
         ];
         let index = [1, 2, 0, 3];
         Ref::Owned(
-            Mesh (
+            Mesh(
                 VertexBuffer::new(display, &verties).unwrap(),
                 IndexBuffer::new(display, TriangleStrip, &index).unwrap(),
             )
@@ -77,12 +83,14 @@ impl Polygon<Vertex> for Sprite {
 
 
 
-impl Renderable<shader::Default> for Sprite {
+impl Renderable<shader::Default> for Sprite
+{
     fn uniforms<'a>(&'a self, parent: &Matrix4<f32>)
         -> Ref<'a, shader::DefaultUniforms>
     {
         Ref::Owned(
-            shader::DefaultUniforms {
+            shader::DefaultUniforms
+            {
                 tex: self.texture.clone(),
                 matrix: (parent * self.transform.matrix()).into(),
             }

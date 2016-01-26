@@ -1,20 +1,21 @@
-use std::ops::{Add, Sub, Mul};
+use std::ops::{ Add, Sub, Mul };
 use num;
 use num::Float;
-use cgmath::{Vector2, BaseFloat};
+use cgmath::{ Vector2, BaseFloat };
 
 
 pub const ROUND: f32 = 6.28318530717958647692528676655900576;
 
 
-pub fn curve<F: BaseFloat>(control: [Vector2<F>; 4], t: F) -> Vector2<F> {
+pub fn curve<F>(control: [Vector2<F>; 4], t: F) -> Vector2<F>
+    where F: BaseFloat
+{
     // Cubic Bézier curves
 
-    macro_rules! cast (
-        ($x: expr) => (
-            num::cast::<_, F>($x).unwrap()
-        )
-    );
+    macro_rules! cast
+    {
+        ($x: expr) => (num::cast::<_, F>($x).unwrap())
+    }
     let p = control;
     let r = cast!(1.0) - t;
 
