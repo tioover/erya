@@ -4,7 +4,7 @@ use texture::TextureRef;
 use mesh::{ Mesh, Polygon };
 use transform::Transform;
 use rect::Rect;
-use utils::{ Ref, cast };
+use utils::cast;
 use renderer::Renderable;
 use cgmath::Matrix4;
 use id::Id;
@@ -122,17 +122,14 @@ impl Polygon<Vertex> for Sprite
 
 impl Renderable<Shader> for Sprite
 {
-    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>)
-        -> Ref<'a, Uniforms>
+    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> Uniforms
     {
-        Ref::Owned(
-            Uniforms
-            {
-                image: self.texture.clone(),
-                opacity: self.opacity,
-                matrix: (parent * self.transform.matrix()).into(),
-            }
-        )
+        Uniforms
+        {
+            image: self.texture.clone(),
+            opacity: self.opacity,
+            matrix: (parent * self.transform.matrix()).into(),
+        }
     }
 }
 

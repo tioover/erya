@@ -3,7 +3,6 @@ use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
 use mesh::Polygon;
 use shader::Shader;
-use utils::Ref;
 
 
 pub struct Renderer<'display, S>
@@ -56,7 +55,7 @@ impl<'display, S: Shader> Renderer<'display, S>
         where R: Renderable<S>
     {
         let uniforms = renderable.uniforms(parent);
-        self.draw(target, renderable, &*uniforms);
+        self.draw(target, renderable, &uniforms);
     }
 
     fn build_params<'a>() -> DrawParameters<'a>
@@ -72,5 +71,5 @@ impl<'display, S: Shader> Renderer<'display, S>
 
 pub trait Renderable<S: Shader>: Polygon<S::Vertex>
 {
-    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> Ref<'a, S::Uniforms>;
+    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> S::Uniforms;
 }
