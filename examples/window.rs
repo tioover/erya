@@ -2,6 +2,7 @@ extern crate erya;
 #[macro_use]
 extern crate glium;
 
+
 use glium::Surface;
 use glium::glutin::Event;
 
@@ -9,6 +10,7 @@ use glium::glutin::Event;
 fn main()
 {
     let display = erya::build_display("window", (800, 600));
+    let mut timer = erya::timer::Timer::new().limit(20);
 
     'main: loop
     {
@@ -23,6 +25,6 @@ fn main()
                 _ => (),
             }
         }
-        erya::timer::sleep_ms(10);
+        timer.update();
     }
 }

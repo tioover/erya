@@ -4,8 +4,10 @@ extern crate erya;
 extern crate glium;
 extern crate cgmath;
 
+
 use glium::glutin::Event;
 use glium::Surface;
+use erya::timer::Timer;
 use erya::renderer::Renderer;
 use erya::camera::{ Camera3D, Camera };
 use erya::mesh::Mesh;
@@ -72,6 +74,7 @@ fn main()
     let display = erya::build_display("triangle", (800, 600));
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
+    let mut timer = Timer::new().limit(40);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
     let mesh = Mesh::new(&display, &[
             Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
@@ -94,6 +97,6 @@ fn main()
                 _ => (),
             }
         }
-        erya::timer::sleep_ms(1);
+        timer.update();
     }
 }

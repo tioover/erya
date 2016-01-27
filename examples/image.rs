@@ -11,6 +11,7 @@ use erya::loader::{ Queue, QueueState };
 use erya::texture::{ Texture, TextureRef };
 use erya::camera::{ Camera, Camera2D };
 use erya::sprite::Sprite;
+use erya::timer::Timer;
 
 
 fn main()
@@ -20,6 +21,7 @@ fn main()
     let mut queue = Queue::<Texture>::new(&display, vec![res_key.clone()]);
     let camera = Camera2D::new(&display);
     let renderer = Renderer::new(&display);
+    let mut timer = Timer::new().limit(40);
 
     'main: loop
     {
@@ -45,6 +47,6 @@ fn main()
                 _ => (),
             }
         }
-        erya::timer::sleep_ms(1);
+        timer.update();
     }
 }
