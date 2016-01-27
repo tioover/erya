@@ -44,11 +44,12 @@ impl ::shader::Shader for Shader
 pub struct Uniforms
 {
     pub matrix: [[f32; 4]; 4],
+    pub opacity: f32,
     pub image: TextureRef,
 }
 
 
-implement_uniforms! { Uniforms, matrix, image }
+implement_uniforms! { Uniforms, matrix, opacity, image }
 
 
 pub struct Sprite
@@ -57,6 +58,7 @@ pub struct Sprite
     texture: TextureRef,
     width: f32,
     height: f32,
+    opacity: f32,
     rect: Rect,
     mesh: Mesh<Vertex>,
     pub transform: Transform,
@@ -83,6 +85,7 @@ impl Sprite
             width: cast(width.clone()),
             height: cast(height.clone()),
             transform: Transform::new(),
+            opacity: 1.0,
             mesh: Sprite::build_mesh(display, cast(width), cast(height), &rect),
             rect: rect,
         }
@@ -126,6 +129,7 @@ impl Renderable<Shader> for Sprite
             Uniforms
             {
                 image: self.texture.clone(),
+                opacity: self.opacity,
                 matrix: (parent * self.transform.matrix()).into(),
             }
         )
