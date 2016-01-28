@@ -1,4 +1,3 @@
-#![feature(braced_empty_structs)]
 extern crate cgmath;
 extern crate time;
 extern crate rand;
@@ -29,3 +28,10 @@ pub mod loader;
 
 
 pub use utils::build_display;
+pub use renderer::Renderer;
+pub use texture::{ Texture, TextureRef };
+pub use camera::{ Camera, Camera2D, Camera3D };
+pub use sprite::Sprite;
+pub use timer::Timer;
+pub use mesh::Mesh;
+

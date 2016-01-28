@@ -46,6 +46,7 @@ pub struct Queue<'display, T: Resource>
 }
 
 
+#[derive(Clone, Copy)]
 pub enum QueueState
 {
     Empty,

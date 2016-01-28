@@ -7,10 +7,7 @@ extern crate cgmath;
 
 use glium::glutin::Event;
 use glium::Surface;
-use erya::timer::Timer;
-use erya::renderer::Renderer;
-use erya::camera::{ Camera3D, Camera };
-use erya::mesh::Mesh;
+use erya::{ Renderer, Mesh, Camera3D, Camera, Timer };
 
 
 #[derive(Copy, Clone)]

@@ -2,7 +2,7 @@ use num::Zero;
 use cgmath::{ Vector, Vector3, Matrix4, Basis3, Quaternion };
 
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Transform
 {
     pub scale: f32,
@@ -35,7 +35,7 @@ impl Transform
         Transform { scale: scale, ..self }
     }
 
-    pub fn offset(self, anchor: Vector3<f32>) -> Transform
+    pub fn anchor(self, anchor: Vector3<f32>) -> Transform
     {
         Transform { anchor: anchor, ..self }
     }
