@@ -5,10 +5,11 @@ extern crate glium;
 extern crate cgmath;
 
 
+use std::convert::AsRef;
 use glium::glutin::Event;
 use glium::Surface;
-use cgmath::{ Rotation3, Rad, Quaternion, Angle };
-use erya::{ Renderer, Mesh, Camera3D, Camera, Timer, Transform };
+use cgmath::{ Matrix4, Rotation3, Rad, Quaternion, Angle };
+use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera, Timer, Transform };
 
 
 #[derive(Copy, Clone)]
@@ -69,33 +70,67 @@ impl erya::shader::Shader for Shader
 }
 
 
+struct Triangle 
+{
+    mesh: Mesh<Vertex>,
+    transform: Transform,
+}
+
+
+impl Triangle
+{
+    fn new(display: &Display) -> Triangle
+    {
+        let mesh = Mesh::new(&display, &[
+            Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
+            Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
+            Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
+        ]);
+        Triangle
+        {
+            mesh: mesh,
+            transform: Transform::new(),
+        }
+    }
+}
+
+
+impl Renderable<Shader> for Triangle
+{
+    fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
+    {
+        let mat = parent * self.transform.matrix();
+        Uniforms 
+        {
+            mat: mat.into(),
+        }
+    }
+}
+
+
+impl AsRef<Mesh<Vertex>> for Triangle
+{
+    fn as_ref(&self) -> &Mesh<Vertex> { &self.mesh }
+}
+
+
 fn main()
 {
     let display = erya::build_display("triangle", (800, 600));
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
-    let mut timer = Timer::new().limit(60);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
-    let mesh = Mesh::new(&display, &[
-        Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
-        Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
-        Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
-    ]);
-    let mut transform = Transform::new();
+    let mut timer = Timer::new().limit(60);
     let mut angle: f32 = 0.0;
+    let mut triangle = Triangle::new(&display);
 
     'main: loop
     {
-        let mut target = display.draw();
-        let rotation = Quaternion::from_angle_x(Rad::new(angle));
         angle += 0.01;
-        transform.rotation = rotation;
-        let uniforms = Uniforms
-        {
-            mat: (camera.matrix() * transform.matrix()).into()
-        };
+        let mut target = display.draw();
+        triangle.transform.rotation = Quaternion::from_angle_x(Rad::new(angle));
         target.clear_color(0.0, 0.0, 0.0, 0.0);
-        renderer.draw(&mut target, &mesh, &uniforms);
+        renderer.render(&mut target, &camera.matrix(), &triangle);
         target.finish().unwrap();
         for event in display.poll_events()
         {
