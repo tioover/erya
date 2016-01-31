@@ -1,4 +1,7 @@
 # Erya
+
+![Build Status](https://travis-ci.org/ruoruo-dev/erya.svg?branch=master)
+
 Erya is a simple graphic rendering library.
 
 ## Build
