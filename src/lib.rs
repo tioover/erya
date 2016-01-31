@@ -1,3 +1,6 @@
+//! # Erya
+//! [Erya](https://github.com/tioover/erya) is a simple graphic rendering library.
+
 extern crate cgmath;
 extern crate time;
 extern crate rand;

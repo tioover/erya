@@ -1,3 +1,4 @@
+//! Integer rectangle.
 use num::NumCast;
 use utils::cast;
 

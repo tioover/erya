@@ -1,8 +1,10 @@
+//! Unique identifier.
+
 use time;
 use rand;
 
 
-/// Unique Identifier
+/// Unique Identifier.
 #[derive(Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Copy, Clone)]
 pub struct Id
 {

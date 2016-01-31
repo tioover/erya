@@ -1,9 +1,11 @@
+//! Perspective and view matrix.
+
 use glium::Display;
 use cgmath::{ Matrix, Matrix4, PerspectiveFov, Rad, Deg, deg, Point3, vec3 };
 use transform::Transform;
 
 
-/// Camera types
+/// A trait of camera types
 pub trait Camera
 {
     fn matrix(&self) -> Matrix4<f32>;
@@ -15,7 +17,7 @@ pub trait Camera
 }
 
 
-/// OpenGL coordinates to 2D screen coordinates.
+/// A camera matrix, convert screen coordinates to OpenGL coordinates.
 pub struct Camera2D<'display>
 {
     display: &'display Display,

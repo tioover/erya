@@ -1,3 +1,5 @@
+//! Basic 2D game object and shader.
+
 use glium::Display;
 use num::NumCast;
 use texture::TextureRef;
@@ -10,6 +12,7 @@ use cgmath::Matrix4;
 use id::Id;
 
 
+/// 2D Sprite vertex type
 #[derive(Copy, Clone)]
 pub struct Vertex
 {
@@ -21,6 +24,7 @@ pub struct Vertex
 implement_vertex!{ Vertex, position, texture_position }
 
 
+/// Simple sprite shader
 pub struct Shader;
 
 
@@ -76,6 +80,8 @@ impl<'display> Sprite<'display>
         Sprite::with_rect(display, tex, rect, width, height)
     }
 
+    /// Create a sprite with size and the
+    /// [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas).
     pub fn with_rect<N>(display: &'display Display, tex: TextureRef,
                         rect: Rect, width: N, height: N) -> Sprite<'display>
         where N: NumCast + Clone
@@ -116,6 +122,7 @@ impl<'display> Sprite<'display>
         self.mesh = Sprite::build_mesh(self.display, width, height, &self.rect);
     }
 
+    /// Change the texture atlas rectangle.
     pub fn rect(&mut self, rect: Rect)
     {
         self.mesh = Sprite::build_mesh(self.display, self.width, self.height, &rect);

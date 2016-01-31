@@ -1,3 +1,5 @@
+//! Some math function and constant.
+
 use std::ops::{ Add, Sub, Mul };
 use num;
 use num::Float;
@@ -7,7 +9,7 @@ use cgmath::{ Vector2, BaseFloat };
 pub const ROUND: f32 = 6.28318530717958647692528676655900576;
 
 
-/// Cubic Bézier curves
+/// Calculate the cubic bézier curves.
 pub fn curve<F>(control_point: [Vector2<F>; 4], t: F) -> Vector2<F>
     where F: BaseFloat
 {
@@ -25,7 +27,7 @@ pub fn curve<F>(control_point: [Vector2<F>; 4], t: F) -> Vector2<F>
 }
 
 
-/// Generics linear interpolation
+/// Generics linear interpolation.
 pub fn lerp<T, F: Float>(a: T, b: T, t: F) -> T
     where T: Copy + Add<T, Output=T> + Sub<T, Output=T> + Mul<F, Output=T>
 {

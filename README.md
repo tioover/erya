@@ -1,5 +1,5 @@
-# erya
-Simple graphic rendering library
+# Erya
+Erya is a simple graphic rendering library.
 
 ## Build
 

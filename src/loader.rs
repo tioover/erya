@@ -1,3 +1,5 @@
+//! Resource asynchronous loader.
+
 use std::path::{ Path, PathBuf };
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -12,23 +14,30 @@ pub type Key = PathBuf;
 /// Loadable resource types
 pub trait Resource: Sized
 {
+    /// Middle data.
     type LoadData: Send + 'static;
 
+    /// Synchronize load.
     fn load<P: AsRef<Path>>(path: &P) -> Self::LoadData;
 
+    /// Asynchronous load.
     fn get<P: AsRef<Path> + Send + 'static>(path: P) -> LoadHandler<Self>
     {
         LoadHandler(spawn(move || {Self::load(&path)}))
     }
+
+    /// Build resource object from middle load data.
     fn generate(display: &Display, data: Self::LoadData) -> Self;
 }
 
 
+/// The handler of load thread.
 pub struct LoadHandler<T: Resource>(pub JoinHandle<T::LoadData>);
 
 
 impl<T: Resource> LoadHandler<T>
 {
+    /// Get data.
     pub fn unwrap(self, display: &Display) -> T
     {
         let LoadHandler(handler) = self;
@@ -38,6 +47,7 @@ impl<T: Resource> LoadHandler<T>
 
 
 
+/// Asynchronous load queue.
 pub struct Queue<'display, T: Resource>
 {
     display: &'display Display,
@@ -47,9 +57,11 @@ pub struct Queue<'display, T: Resource>
 }
 
 
+/// State of the load queue.
 #[derive(Clone)]
 pub enum QueueState
 {
+    /// Queue is empty, load process is done.
     Empty,
     Received(Key),
     NotReceived,
@@ -58,6 +70,7 @@ pub enum QueueState
 
 impl<'a, T: Resource> Queue<'a, T>
 {
+    /// Create a load queue and start asynchronous load.
     pub fn new(display: &'a Display, keys: Vec<Key>) -> Queue<'a, T>
     {
         let (tx, rx) = channel();

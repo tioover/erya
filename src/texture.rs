@@ -1,3 +1,5 @@
+//! Texture handler types.
+
 use std::path::Path;
 use std::rc::Rc;
 use std::cmp::{ PartialEq, Eq };
@@ -13,6 +15,7 @@ use loader::Resource;
 pub type TextureData = ::glium::texture::CompressedSrgbTexture2d;
 
 
+/// 2D Texture Object.
 pub struct Texture
 {
     pub id: Id,
@@ -22,6 +25,7 @@ pub struct Texture
 }
 
 
+/// Texture reference.
 #[derive(Clone)]
 pub struct TextureRef(pub Rc<Texture>);
 

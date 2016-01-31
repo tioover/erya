@@ -1,3 +1,5 @@
+//! Program timer and FPS counter.
+
 use std::time::Duration;
 use std::collections::VecDeque;
 use time::precise_time_ns;
@@ -7,6 +9,7 @@ use time::precise_time_ns;
 const SECOND: u64 = 1_000_000_000;
 
 
+/// Program main timer, and FPS counter.
 pub struct Timer
 {
     limit: u8,
@@ -25,6 +28,7 @@ impl Timer
         }
     }
 
+    /// Set FPS limit.
     pub fn limit(self, fps: u8) -> Timer
     {
         Timer { limit: fps, ..self }

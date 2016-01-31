@@ -1,3 +1,5 @@
+//! Describes the object transform.
+
 use num::Zero;
 use cgmath::{ Vector, Vector3, Matrix4, Basis3, Quaternion };
 
@@ -7,6 +9,7 @@ pub struct Transform
 {
     pub scale: f32,
     pub position: Vector3<f32>,
+    /// A offset set center of model.
     pub anchor: Vector3<f32>,
     pub rotation: Quaternion<f32>,
 }
@@ -14,6 +17,7 @@ pub struct Transform
 
 impl Transform
 {
+    //! Create empty transform.
     pub fn new() -> Transform
     {
         Transform
@@ -35,17 +39,20 @@ impl Transform
         Transform { scale: scale, ..self }
     }
 
+    /// Set object center offset.
     pub fn anchor(self, x: f32, y: f32, z: f32) -> Transform
     {
         Transform { anchor: Vector3::new(x, y, z), ..self }
     }
 
+    /// Apply transform to a point.
     #[inline]
     pub fn compute(&self, x: f32, y: f32, z: f32) -> Vector3<f32>
     {
         self.rotation * &((Vector3::new(x, y, z) - self.anchor) * self.scale) + self.position
     }
 
+    /// Build transform matrix.
     #[inline]
     pub fn matrix(&self) -> Matrix4<f32>
     {

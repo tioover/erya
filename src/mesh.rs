@@ -1,3 +1,5 @@
+//! 3D mesh object.
+
 use glium;
 use glium::Display;
 use glium::index::{ PrimitiveType, NoIndices };
@@ -11,6 +13,7 @@ pub type Index = u16;
 pub type IndexBuffer = glium::IndexBuffer<Index>;
 
 
+/// Mesh type, inclusive of vertex buffer and index buffer.
 pub struct Mesh<T: VertexType>
 {
     pub verties: VertexBuffer<T>,

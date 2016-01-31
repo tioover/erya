@@ -1,16 +1,24 @@
+//! Shader and uniforms definition tools.
+
 use glium::{ Display, Program };
 pub use glium::uniforms::{ Uniforms, UniformValue, AsUniformValue };
 use mesh::VertexType;
 
 
+/// Trait of the shader mark type,
+/// that provide shader program code and related type convention.
 pub trait Shader
 {
     type Vertex: VertexType;
     type Uniforms: Uniforms;
 
+    /// Vertex shader source code.
     fn vertex() -> &'static str;
+
+    /// Fragment shader source code.
     fn fragment() -> &'static str;
 
+    /// Compilation shaders and return shaders object.
     fn program(display: &Display) -> Program
     {
         program!(display,
@@ -23,7 +31,7 @@ pub trait Shader
     }
 }
 
-
+/// Implements the `glium::uniforms::Uniforms` trait for the given type.
 #[macro_export]
 macro_rules! implement_uniforms
 {

@@ -1,3 +1,5 @@
+//! Draw the renderable object.
+
 use std::marker::PhantomData;
 use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
@@ -5,6 +7,7 @@ use mesh::Polygon;
 use shader::Shader;
 
 
+/// Render context object.
 pub struct Renderer<'display, S>
     where S: Shader
 {
@@ -18,6 +21,7 @@ pub struct Renderer<'display, S>
 
 impl<'display, S: Shader> Renderer<'display, S>
 {
+    /// Create default renderer.
     pub fn new(display: &'display Display) -> Renderer<'display, S>
     {
         let program = S::program(display);
@@ -30,6 +34,7 @@ impl<'display, S: Shader> Renderer<'display, S>
         }
     }
 
+    /// Draw mesh with uniforms.
     pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S::Uniforms)
         where P: Polygon<S::Vertex>
     {
@@ -51,6 +56,7 @@ impl<'display, S: Shader> Renderer<'display, S>
         ).unwrap();
     }
 
+    /// Render renderable object with parent matrix.
     pub fn render<R>(&self, target: &mut Frame, parent: &Matrix4<f32>, renderable: &R)
         where R: Renderable<S>
     {

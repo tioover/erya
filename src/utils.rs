@@ -1,9 +1,12 @@
+//! Utilities functions.
+
 use std::string::ToString;
 use num::NumCast;
 use glium::glutin::WindowBuilder;
 use glium::{ Display, DisplayBuild };
 
 
+/// Build OpenGL context and create window.
 pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
     where T: ToString
 {
@@ -17,6 +20,7 @@ pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
 }
 
 
+/// Number cast function.
 #[inline]
 pub fn cast<T, U>(x: T) -> U
     where T: NumCast, U: NumCast
