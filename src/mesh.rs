@@ -1,5 +1,6 @@
 //! 3D mesh object.
 
+use std::convert::AsRef;
 use glium;
 use glium::Display;
 use glium::index::{ PrimitiveType, NoIndices };
@@ -44,18 +45,17 @@ impl<T: VertexType> Mesh<T>
 }
 
 
-pub trait Polygon<T: VertexType>
-{
-    fn mesh(&self) -> &Mesh<T>;
-}
-
-
-impl<T> Polygon<T> for Mesh<T>
+impl<T> AsRef<Mesh<T>> for Mesh<T>
     where T: VertexType
 {
-    fn mesh(&self) -> &Mesh<T>
-    {
-        self
-    }
+    fn as_ref(&self) -> &Self { self }
 }
+
+
+/// Polygon types.
+pub trait Polygon<T: VertexType>: AsRef<Mesh<T>> {}
+
+
+impl<T: AsRef<Mesh<U>>, U: VertexType> Polygon<U> for T {}
+
 

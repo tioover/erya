@@ -1,9 +1,10 @@
 //! Basic 2D game object and shader.
 
+use std::convert::AsRef;
 use glium::Display;
 use num::NumCast;
 use texture::TextureRef;
-use mesh::{ Mesh, Polygon };
+use mesh::Mesh;
 use transform::Transform;
 use rect::Rect;
 use utils::cast;
@@ -131,12 +132,9 @@ impl<'display> Sprite<'display>
 }
 
 
-impl<'display> Polygon<Vertex> for Sprite<'display>
+impl<'display> AsRef<Mesh<Vertex>> for Sprite<'display>
 {
-    fn mesh(&self) -> &Mesh<Vertex>
-    {
-        &self.mesh
-    }
+    fn as_ref(&self) -> &Mesh<Vertex> { &self.mesh }
 }
 
 

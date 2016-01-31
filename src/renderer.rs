@@ -3,8 +3,8 @@
 use std::marker::PhantomData;
 use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
-use mesh::Polygon;
 use shader::Shader;
+use mesh::Polygon;
 
 
 /// Render context object.
@@ -41,7 +41,7 @@ impl<'display, S: Shader> Renderer<'display, S>
         use glium::index::IndicesSource;
         use either::{ Left, Right };
 
-        let mesh = polygon.mesh();
+        let mesh = polygon.as_ref();
         let indices: IndicesSource = match mesh.indices
         {
             Left(ref x) => x.into(),
