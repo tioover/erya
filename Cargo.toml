@@ -3,7 +3,11 @@
 name = "erya"
 version = "0.0.1"
 authors = ["tioover <tioover@gmail.com>"]
-
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ruoruo-dev/erya.git"
+documentation = "http://ruoruo-dev.github.io/erya/erya/"
+description = "Erya is a simple graphic rendering library."
 
 
 [lib]
