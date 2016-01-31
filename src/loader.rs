@@ -11,7 +11,7 @@ use glium::Display;
 pub type Key = PathBuf;
 
 
-/// Loadable resource types
+/// Loadable resource types.
 pub trait Resource: Sized
 {
     /// Middle data.

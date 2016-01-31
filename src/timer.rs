@@ -9,7 +9,7 @@ use time::precise_time_ns;
 const SECOND: u64 = 1_000_000_000;
 
 
-/// Program main timer, and FPS counter.
+/// Program timer and FPS counter.
 pub struct Timer
 {
     limit: u8,

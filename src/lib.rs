@@ -1,5 +1,5 @@
 //! # Erya
-//! [Erya](https://github.com/tioover/erya) is a simple graphic rendering library.
+//! [Erya](https://github.com/ruoruo-dev/erya) is a simple graphic rendering library.
 
 extern crate cgmath;
 extern crate time;

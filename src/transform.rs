@@ -9,7 +9,7 @@ pub struct Transform
 {
     pub scale: f32,
     pub position: Vector3<f32>,
-    /// A offset set center of model.
+    /// A offset point set the center of model.
     pub anchor: Vector3<f32>,
     pub rotation: Quaternion<f32>,
 }

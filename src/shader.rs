@@ -6,16 +6,16 @@ use mesh::VertexType;
 
 
 /// Trait of the shader mark type,
-/// that provide shader program code and related type convention.
+/// that provide GLSL source code and related type convention.
 pub trait Shader
 {
     type Vertex: VertexType;
     type Uniforms: Uniforms;
 
-    /// Vertex shader source code.
+    /// Vertex shader GLSL source code.
     fn vertex() -> &'static str;
 
-    /// Fragment shader source code.
+    /// Fragment shader GLSL source code.
     fn fragment() -> &'static str;
 
     /// Compilation shaders and return shaders object.
