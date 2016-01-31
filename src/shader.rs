@@ -15,10 +15,10 @@ pub trait Shader
     {
         program!(display,
             140 =>
-                {
-                    vertex: Self::vertex(),
-                    fragment: Self::fragment(),
-                },
+            {
+                vertex: Self::vertex(),
+                fragment: Self::fragment(),
+            },
         ).unwrap()
     }
 }

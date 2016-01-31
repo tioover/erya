@@ -7,7 +7,8 @@ extern crate cgmath;
 
 use glium::glutin::Event;
 use glium::Surface;
-use erya::{ Renderer, Mesh, Camera3D, Camera, Timer };
+use cgmath::{ Rotation3, Rad, Quaternion, Angle };
+use erya::{ Renderer, Mesh, Camera3D, Camera, Timer, Transform };
 
 
 #[derive(Copy, Clone)]
@@ -45,7 +46,8 @@ impl erya::shader::Shader for Shader
         in vec3 color;
         out vec3 vColor;
 
-        void main() {
+        void main()
+        {
             gl_Position = mat * vec4(position, 0.0, 1.0);
             vColor = color;
         }
@@ -58,7 +60,8 @@ impl erya::shader::Shader for Shader
         #version 140
         in vec3 vColor;
         out vec4 f_color;
-        void main() {
+        void main()
+        {
             f_color = vec4(vColor, 1.0);
         }
         "
@@ -71,19 +74,27 @@ fn main()
     let display = erya::build_display("triangle", (800, 600));
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
-    let mut timer = Timer::new().limit(40);
+    let mut timer = Timer::new().limit(60);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
     let mesh = Mesh::new(&display, &[
-            Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
-            Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
-            Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
-        ]);
+        Vertex { position: [-1.0, -1.0], color: [0.0, 1.0, 0.0] },
+        Vertex { position: [ 0.0,  1.0], color: [0.0, 0.0, 1.0] },
+        Vertex { position: [ 1.0, -1.0], color: [1.0, 0.0, 0.0] },
+    ]);
+    let mut transform = Transform::new();
+    let mut angle: f32 = 0.0;
 
-    'main: loop {
+    'main: loop
+    {
         let mut target = display.draw();
-
-        let uniforms = Uniforms { mat: camera.matrix().into() };
-        target.clear_color_and_depth((0.0, 0.0, 0.0, 0.0), 1.0);
+        let rotation = Quaternion::from_angle_x(Rad::new(angle));
+        angle += 0.01;
+        transform.rotation = rotation;
+        let uniforms = Uniforms
+        {
+            mat: (camera.matrix() * transform.matrix()).into()
+        };
+        target.clear_color(0.0, 0.0, 0.0, 0.0);
         renderer.draw(&mut target, &mesh, &uniforms);
         target.finish().unwrap();
         for event in display.poll_events()

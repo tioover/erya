@@ -1,7 +1,9 @@
 use time;
 use rand;
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+
+/// Unique Identifier
+#[derive(Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Copy, Clone)]
 pub struct Id
 {
     random: u32,

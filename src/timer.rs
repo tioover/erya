@@ -30,7 +30,7 @@ impl Timer
         Timer { limit: fps, ..self }
     }
 
-    fn do_frame_limit(&self)
+    fn limit_frame_rate(&self)
     {
         use std::thread::sleep;
 
@@ -44,7 +44,7 @@ impl Timer
 
     pub fn update(&mut self)
     {
-        self.do_frame_limit();
+        self.limit_frame_rate();
         let now = precise_time_ns();
         let a_second_ago = now - SECOND;
         while self.frames.front().map_or(false, |t| *t < a_second_ago)

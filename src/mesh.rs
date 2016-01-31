@@ -43,14 +43,14 @@ impl<T: VertexType> Mesh<T>
 
 pub trait Polygon<T: VertexType>
 {
-    fn mesh<'a>(&'a self) -> &'a Mesh<T>;
+    fn mesh(&self) -> &Mesh<T>;
 }
 
 
 impl<T> Polygon<T> for Mesh<T>
     where T: VertexType
 {
-    fn mesh<'a>(&'a self) -> &'a Mesh<T>
+    fn mesh(&self) -> &Mesh<T>
     {
         self
     }

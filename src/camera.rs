@@ -3,11 +3,19 @@ use cgmath::{ Matrix, Matrix4, PerspectiveFov, Rad, Deg, deg, Point3, vec3 };
 use transform::Transform;
 
 
+/// Camera types
 pub trait Camera
 {
     fn matrix(&self) -> Matrix4<f32>;
+
+    fn array(&self) -> [[f32; 4]; 4]
+    {
+        self.matrix().into()
+    }
 }
 
+
+/// OpenGL coordinates to 2D screen coordinates.
 pub struct Camera2D<'display>
 {
     display: &'display Display,
@@ -46,6 +54,7 @@ impl<'a> Camera for Camera2D<'a>
 }
 
 
+/// 3D perspective camera.
 pub struct Camera3D<'display>
 {
     display: &'display Display,

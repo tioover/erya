@@ -7,8 +7,8 @@ pub struct Transform
 {
     pub scale: f32,
     pub position: Vector3<f32>,
-    pub rotation: Quaternion<f32>,
     pub anchor: Vector3<f32>,
+    pub rotation: Quaternion<f32>,
 }
 
 
@@ -25,9 +25,9 @@ impl Transform
         }
     }
 
-    pub fn position(self, position: Vector3<f32>) -> Transform
+    pub fn position(self, x: f32, y: f32, z: f32) -> Transform
     {
-        Transform { position: position, ..self }
+        Transform { position: Vector3::new(x, y, z), ..self }
     }
 
     pub fn scale(self, scale: f32) -> Transform
@@ -35,15 +35,15 @@ impl Transform
         Transform { scale: scale, ..self }
     }
 
-    pub fn anchor(self, anchor: Vector3<f32>) -> Transform
+    pub fn anchor(self, x: f32, y: f32, z: f32) -> Transform
     {
-        Transform { anchor: anchor, ..self }
+        Transform { anchor: Vector3::new(x, y, z), ..self }
     }
 
     #[inline]
-    pub fn compute(&self, x: Vector3<f32>) -> Vector3<f32>
+    pub fn compute(&self, x: f32, y: f32, z: f32) -> Vector3<f32>
     {
-        self.rotation * &((x - self.anchor) * self.scale) + self.position
+        self.rotation * &((Vector3::new(x, y, z) - self.anchor) * self.scale) + self.position
     }
 
     #[inline]

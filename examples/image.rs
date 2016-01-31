@@ -30,11 +30,13 @@ fn main()
         match queue.try_recv()
         {
             NotReceived => target.clear_color(0.25, 0.25, 0.25, 0.0),
-            Received => {
-                let tex = TextureRef(queue.received[&res_key].clone());
+            Received(ref key) =>
+            {
+                let tex = TextureRef(queue.received[key].clone());
                 sprite = Some(Sprite::new(&display, tex, 128, 128));
             }
-            Empty => {
+            Empty =>
+            {
                 target.clear_color(0.0, 0.0, 0.0, 0.0);
                 renderer.render(&mut target, &camera, sprite.as_ref().unwrap())
             }

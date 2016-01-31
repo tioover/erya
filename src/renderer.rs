@@ -71,5 +71,5 @@ impl<'display, S: Shader> Renderer<'display, S>
 
 pub trait Renderable<S: Shader>: Polygon<S::Vertex>
 {
-    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> S::Uniforms;
+    fn uniforms(&self, parent: &Matrix4<f32>) -> S::Uniforms;
 }

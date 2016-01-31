@@ -9,6 +9,7 @@ use glium::Display;
 pub type Key = PathBuf;
 
 
+/// Loadable resource types
 pub trait Resource: Sized
 {
     type LoadData: Send + 'static;
@@ -46,11 +47,11 @@ pub struct Queue<'display, T: Resource>
 }
 
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum QueueState
 {
     Empty,
-    Received,
+    Received(Key),
     NotReceived,
 }
 
@@ -91,8 +92,8 @@ impl<'a, T: Resource> Queue<'a, T>
                     break
                 }
             }
-            self.received.insert(key, Rc::new(data));
-            QueueState::Received
+            self.received.insert(key.clone(), Rc::new(data));
+            QueueState::Received(key)
         }
         else
         {

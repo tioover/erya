@@ -34,4 +34,5 @@ pub use camera::{ Camera, Camera2D, Camera3D };
 pub use sprite::Sprite;
 pub use timer::Timer;
 pub use mesh::Mesh;
+pub use transform::Transform;
 

@@ -31,12 +31,12 @@ impl ::shader::Shader for Shader
 
     fn vertex() -> &'static str
     {
-        include_str!("shader/sprite.vert")
+        include_str!("sprite.vert")
     }
 
     fn fragment() -> &'static str
     {
-        include_str!("shader/sprite.frag")
+        include_str!("sprite.frag")
     }
 }
 
@@ -52,9 +52,10 @@ pub struct Uniforms
 implement_uniforms! { Uniforms, matrix, opacity, image }
 
 
-pub struct Sprite
+pub struct Sprite<'display>
 {
     pub id: Id,
+    display: &'display Display,
     texture: TextureRef,
     width: f32,
     height: f32,
@@ -65,17 +66,18 @@ pub struct Sprite
 }
 
 
-impl Sprite
+impl<'display> Sprite<'display>
 {
-    pub fn new<N>(display: &Display, tex: TextureRef, width: N, height: N) -> Sprite
+    pub fn new<N>(display: &'display Display, tex: TextureRef, width: N, height: N)
+        -> Sprite<'display>
         where N: NumCast + Clone
     {
         let rect = Rect::new(0, 0, tex.width, tex.height);
         Sprite::with_rect(display, tex, rect, width, height)
     }
 
-    pub fn with_rect<N>(display: &Display, tex: TextureRef,
-                        rect: Rect, width: N, height: N) -> Sprite
+    pub fn with_rect<N>(display: &'display Display, tex: TextureRef,
+                        rect: Rect, width: N, height: N) -> Sprite<'display>
         where N: NumCast + Clone
     {
         Sprite
@@ -88,6 +90,7 @@ impl Sprite
             opacity: 1.0,
             mesh: Sprite::build_mesh(display, cast(width), cast(height), &rect),
             rect: rect,
+            display: display,
         }
     }
 
@@ -107,12 +110,23 @@ impl Sprite
 
         Mesh::with_indices(display, &verties, &[0, 1, 2, 2, 3, 0])
     }
+
+    pub fn resize(&mut self, width: f32, height: f32)
+    {
+        self.mesh = Sprite::build_mesh(self.display, width, height, &self.rect);
+    }
+
+    pub fn rect(&mut self, rect: Rect)
+    {
+        self.mesh = Sprite::build_mesh(self.display, self.width, self.height, &rect);
+        self.rect = rect;
+    }
 }
 
 
-impl Polygon<Vertex> for Sprite
+impl<'display> Polygon<Vertex> for Sprite<'display>
 {
-    fn mesh<'a>(&'a self) -> &'a Mesh<Vertex>
+    fn mesh(&self) -> &Mesh<Vertex>
     {
         &self.mesh
     }
@@ -120,9 +134,9 @@ impl Polygon<Vertex> for Sprite
 
 
 
-impl Renderable<Shader> for Sprite
+impl<'display> Renderable<Shader> for Sprite<'display>
 {
-    fn uniforms<'a>(&'a self, parent: &Matrix4<f32>) -> Uniforms
+    fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
     {
         Uniforms
         {
