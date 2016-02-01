@@ -32,6 +32,7 @@ pub mod shader;
 pub mod sprite;
 pub mod utils;
 pub mod loader;
+pub mod layer;
 
 
 pub use utils::build_display;
