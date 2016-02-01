@@ -1,4 +1,3 @@
-use cgmath::Matrix4;
 use glium;
 use glium::Display;
 use glium::index::PrimitiveType::TrianglesList;
@@ -45,12 +44,3 @@ impl<T: VertexType> Mesh<T>
         }
     }
 }
-
-
-/// Base renderable object.
-pub trait Model<S: ::shader::Shader>
-{
-    fn mesh(&self) -> &Mesh<S::Vertex>;
-    fn uniforms(&self, parent: &Matrix4<f32>) -> S::Uniforms;
-}
-

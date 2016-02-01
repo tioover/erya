@@ -6,7 +6,7 @@ extern crate cgmath;
 
 
 use glium::glutin::Event;
-use glium::Surface;
+use glium::{ Surface, Frame };
 use cgmath::{ Matrix4, Rotation3, Rad, Quaternion, Angle };
 use erya::shader;
 use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera,
@@ -34,7 +34,7 @@ implement_uniforms! { Uniforms, mat }
 struct Shader;
 
 
-impl shader::Shader for Shader
+impl shader::ShaderType for Shader
 {
     type Vertex = Vertex;
     type Uniforms = Uniforms;
@@ -96,15 +96,14 @@ impl Triangle
 }
 
 
-impl Model<Shader> for Triangle
+impl Renderable<Shader> for Triangle
 {
-    fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
+    fn draw(&self, renderer: &Renderer<Shader>, target: &mut Frame, parent: &Matrix4<f32>)
     {
         let mat = parent * self.transform.matrix();
-        Uniforms { mat: mat.into() }
+        let uniforms = Uniforms { mat: mat.into() };
+        renderer.draw(target, &self.mesh, &uniforms);
     }
-    
-    fn mesh(&self) -> &Mesh<Vertex> { &self.mesh }
 }
 
 

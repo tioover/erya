@@ -2,12 +2,12 @@
 
 use glium::{ Display, Program };
 pub use glium::uniforms::{ Uniforms, UniformValue, AsUniformValue };
-use model::VertexType;
+use mesh::VertexType;
 
 
 /// Trait of the shader mark type,
 /// that provide GLSL source code and related type convention.
-pub trait Shader
+pub trait ShaderType
 {
     type Vertex: VertexType;
     type Uniforms: Uniforms;

@@ -19,7 +19,7 @@ pub use glium::Display;
 
 
 pub mod renderer;
-pub mod model;
+pub mod mesh;
 pub mod texture;
 pub mod id;
 pub mod math;
@@ -40,6 +40,6 @@ pub use texture::{ Texture, TextureRef };
 pub use camera::{ Camera, Camera2D, Camera3D };
 pub use sprite::Sprite;
 pub use timer::Timer;
-pub use model::{ Mesh, Model };
+pub use mesh::Mesh;
 pub use transform::Transform;
 

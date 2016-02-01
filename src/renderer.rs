@@ -3,13 +3,13 @@
 use std::marker::PhantomData;
 use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
-use shader::Shader;
-use model::Model;
+use shader::ShaderType;
+use mesh::Mesh;
 
 
 /// Render context object.
 pub struct Renderer<'display, S>
-    where S: Shader
+    where S: ShaderType
 {
     pub display: &'display Display,
     program: Program,
@@ -19,7 +19,7 @@ pub struct Renderer<'display, S>
 
 
 
-impl<'display, S: Shader> Renderer<'display, S>
+impl<'display, S: ShaderType> Renderer<'display, S>
 {
     /// Create default renderer.
     pub fn new(display: &'display Display) -> Renderer<'display, S>
@@ -35,14 +35,12 @@ impl<'display, S: Shader> Renderer<'display, S>
     }
 
     /// Draw mesh with uniforms.
-    pub fn draw<T>(&self, target: &mut Frame, model: &T, parent: &Matrix4<f32>)
-        where T: Model<S>
+    pub fn draw(&self, target: &mut Frame, mesh: &Mesh<S::Vertex>,
+                uniforms: &S::Uniforms)
     {
         use glium::index::IndicesSource;
         use either::{ Left, Right };
 
-        let mesh = model.mesh();
-        let uniforms = model.uniforms(parent);
         let indices: IndicesSource = match mesh.indices
         {
             Left(ref x) => x.into(),
@@ -52,7 +50,7 @@ impl<'display, S: Shader> Renderer<'display, S>
             &mesh.verties,
             indices,
             &self.program,
-            &uniforms,
+            uniforms,
             &self.params
         ).unwrap();
     }
@@ -68,18 +66,9 @@ impl<'display, S: Shader> Renderer<'display, S>
 }
 
 
-pub trait Renderable<S: Shader>
+pub trait Renderable<S: ShaderType>
 {
     /// Draw object to target with parent matrix.
     fn draw(&self, renderer: &Renderer<S>, target: &mut Frame, parent: &Matrix4<f32>);
 }
 
-
-impl<S, T> Renderable<S> for T
-    where S: Shader, T: Model<S>
-{
-    fn draw(&self, renderer: &Renderer<S>, target: &mut Frame, parent: &Matrix4<f32>)
-    {
-        renderer.draw(target, self, parent);
-    }
-}

@@ -1,10 +1,12 @@
 //! Basic 2D game object and shader.
 
-use glium::Display;
+use glium::{ Display, Frame };
 use num::NumCast;
 use texture::TextureRef;
-use model::{ Mesh, Model };
+use mesh::Mesh;
+use shader::ShaderType;
 use transform::Transform;
+use renderer::{ Renderer, Renderable };
 use rect::Rect;
 use utils::cast;
 use cgmath::Matrix4;
@@ -27,7 +29,7 @@ implement_vertex!{ Vertex, position, texture_position }
 pub struct Shader;
 
 
-impl ::shader::Shader for Shader
+impl ShaderType for Shader
 {
     type Vertex = Vertex;
     type Uniforms = Uniforms;
@@ -130,19 +132,17 @@ impl<'display> Sprite<'display>
 }
 
 
-impl<'display> Model<Shader> for Sprite<'display>
+impl<'a> Renderable<Shader> for Sprite<'a>
 {
-    fn mesh(&self) -> &Mesh<Vertex> { &self.mesh }
-    
-    fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
+    fn draw(&self, renderer: &Renderer<Shader>, target: &mut Frame, parent: &Matrix4<f32>)
     {
-        Uniforms
+        let uniforms = Uniforms
         {
             image: self.texture.clone(),
             opacity: self.opacity,
             matrix: (parent * self.transform.matrix()).into(),
-        }
+        };
+        renderer.draw(target, &self.mesh, &uniforms);
     }
 }
-
 
