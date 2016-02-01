@@ -1,5 +1,9 @@
 //! # Erya
-//! [Erya](https://github.com/ruoruo-dev/erya) is a simple graphic rendering library.
+//! [Erya](https://github.com/ruoruo-dev/erya) is a simple graphics rendering library.
+//!
+//! ## Examples
+//! * [2D Sprite and texture asynchronous load](https://github.com/ruoruo-dev/erya/blob/master/examples/image.rs)
+//! * [Simple 3D rendering](https://github.com/ruoruo-dev/erya/blob/master/examples/triangle.rs)
 
 extern crate cgmath;
 extern crate time;

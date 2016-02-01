@@ -81,7 +81,7 @@ impl<'display> Sprite<'display>
         Sprite::with_rect(display, tex, rect, width, height)
     }
 
-    /// Create a sprite with size and the
+    /// Create a sprite with size and
     /// [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas).
     pub fn with_rect<N>(display: &'display Display, tex: TextureRef,
                         rect: Rect, width: N, height: N) -> Sprite<'display>

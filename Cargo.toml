@@ -1,13 +1,13 @@
 [package]
 
 name = "erya"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["tioover <tioover@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/ruoruo-dev/erya.git"
 documentation = "http://ruoruo-dev.github.io/erya/erya/"
-description = "Erya is a simple graphic rendering library."
+description = "Erya is a simple graphics rendering library."
 
 
 [lib]
