@@ -10,7 +10,7 @@ use glium::{ Surface, Frame };
 use cgmath::{ Matrix4, Rotation3, Rad, Quaternion, Angle };
 use erya::shader;
 use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera,
-            Timer, Transform, Model };
+            Timer, Transform };
 
 
 #[derive(Copy, Clone)]
