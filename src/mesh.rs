@@ -1,3 +1,5 @@
+//! Describe 3D polygon mesh.
+
 use glium;
 use glium::Display;
 use glium::index::PrimitiveType::TrianglesList;

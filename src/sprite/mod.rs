@@ -1,4 +1,4 @@
-//! Basic 2D game object and shader.
+//! Basic 2D object and shader.
 
 use glium::{ Display, Frame };
 use num::NumCast;
@@ -46,6 +46,7 @@ impl ShaderType for Shader
 }
 
 
+/// Sprite rendering uniforms.
 pub struct Uniforms
 {
     pub matrix: [[f32; 4]; 4],
@@ -57,6 +58,7 @@ pub struct Uniforms
 implement_uniforms! { Uniforms, matrix, opacity, image }
 
 
+/// Basic 2D object.
 pub struct Sprite<'display>
 {
     pub id: Id,
