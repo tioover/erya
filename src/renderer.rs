@@ -4,7 +4,7 @@ use std::marker::PhantomData;
 use cgmath::Matrix4;
 use glium::{ Display, Program, DrawParameters, Frame, Surface };
 use shader::Shader;
-use mesh::Polygon;
+use model::Model;
 
 
 /// Render context object.
@@ -13,7 +13,7 @@ pub struct Renderer<'display, S>
 {
     pub display: &'display Display,
     program: Program,
-    params: DrawParameters<'display>,
+    params: DrawParameters<'static>,
     _mark: PhantomData<S>,
 }
 
@@ -35,13 +35,14 @@ impl<'display, S: Shader> Renderer<'display, S>
     }
 
     /// Draw mesh with uniforms.
-    pub fn draw<P>(&self, target: &mut Frame, polygon: &P, uniforms: &S::Uniforms)
-        where P: Polygon<S::Vertex>
+    pub fn draw<T>(&self, target: &mut Frame, model: &T, parent: &Matrix4<f32>)
+        where T: Model<S>
     {
         use glium::index::IndicesSource;
         use either::{ Left, Right };
 
-        let mesh = polygon.as_ref();
+        let mesh = model.mesh();
+        let uniforms = model.uniforms(parent);
         let indices: IndicesSource = match mesh.indices
         {
             Left(ref x) => x.into(),
@@ -51,20 +52,12 @@ impl<'display, S: Shader> Renderer<'display, S>
             &mesh.verties,
             indices,
             &self.program,
-            uniforms,
+            &uniforms,
             &self.params
         ).unwrap();
     }
 
-    /// Render renderable object with parent matrix.
-    pub fn render<R>(&self, target: &mut Frame, parent: &Matrix4<f32>, renderable: &R)
-        where R: Renderable<S>
-    {
-        let uniforms = renderable.uniforms(parent);
-        self.draw(target, renderable, &uniforms);
-    }
-
-    fn build_params<'a>() -> DrawParameters<'a>
+    fn build_params() -> DrawParameters<'static>
     {
         DrawParameters
         {
@@ -75,7 +68,18 @@ impl<'display, S: Shader> Renderer<'display, S>
 }
 
 
-pub trait Renderable<S: Shader>: Polygon<S::Vertex>
+pub trait Renderable<S: Shader>
 {
-    fn uniforms(&self, parent: &Matrix4<f32>) -> S::Uniforms;
+    /// Draw object to target with parent matrix.
+    fn draw(&self, renderer: &Renderer<S>, target: &mut Frame, parent: &Matrix4<f32>);
+}
+
+
+impl<S, T> Renderable<S> for T
+    where S: Shader, T: Model<S>
+{
+    fn draw(&self, renderer: &Renderer<S>, target: &mut Frame, parent: &Matrix4<f32>)
+    {
+        renderer.draw(target, self, parent);
+    }
 }

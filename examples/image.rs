@@ -5,7 +5,8 @@ extern crate glium;
 
 use glium::glutin::Event;
 use glium::Surface;
-use erya::{ Renderer, Camera2D, Camera, Timer, Sprite };
+use erya::sprite;
+use erya::{ Renderer, Camera2D, Camera, Timer, Sprite, Renderable };
 use erya::loader::{ Queue, Key };
 use erya::texture::{ Texture, TextureRef };
 
@@ -16,7 +17,7 @@ fn main()
     let res_key = Key::from("examples/assets/block.png");
     let mut queue = Queue::<Texture>::new(&display, vec![res_key.clone()]);
     let camera = Camera2D::new(&display);
-    let renderer = Renderer::new(&display);
+    let renderer = Renderer::<sprite::Shader>::new(&display);
     let mut timer = Timer::new().limit(40);
     let mut sprite: Option<Sprite> = None;
 
@@ -38,7 +39,8 @@ fn main()
             Empty =>
             {
                 target.clear_color(0.0, 0.0, 0.0, 0.0);
-                renderer.render(&mut target, &camera, sprite.as_ref().unwrap())
+                let sprite = sprite.as_ref().unwrap();
+                sprite.draw(&renderer, &mut target, &camera);
             }
 
         }

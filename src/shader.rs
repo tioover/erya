@@ -2,7 +2,7 @@
 
 use glium::{ Display, Program };
 pub use glium::uniforms::{ Uniforms, UniformValue, AsUniformValue };
-use mesh::VertexType;
+use model::VertexType;
 
 
 /// Trait of the shader mark type,
@@ -30,6 +30,7 @@ pub trait Shader
         ).unwrap()
     }
 }
+
 
 /// Implements the `glium::uniforms::Uniforms` trait for the given type.
 #[macro_export]

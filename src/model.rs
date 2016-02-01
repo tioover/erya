@@ -1,16 +1,17 @@
-//! 3D mesh object.
-
-use std::convert::AsRef;
+use cgmath::Matrix4;
 use glium;
 use glium::Display;
-use glium::index::{ PrimitiveType, NoIndices };
+use glium::index::PrimitiveType::TrianglesList;
+use glium::index::NoIndices;
 use either::Either;
 
 pub use glium::VertexBuffer;
 pub use glium::Vertex as VertexType;
 
 
+/// Vertex index data type.
 pub type Index = u16;
+/// A list of indices loaded in the graphics card's memory.
 pub type IndexBuffer = glium::IndexBuffer<Index>;
 
 
@@ -29,33 +30,27 @@ impl<T: VertexType> Mesh<T>
         Mesh
         {
             verties: VertexBuffer::new(display, verties).unwrap(),
-            indices: Either::Right(NoIndices(PrimitiveType::TrianglesList)),
+            indices: Either::Right(NoIndices(TrianglesList)),
         }
     }
 
 
     pub fn with_indices(display: &Display, verties: &[T], index: &[Index]) -> Mesh<T>
     {
+        let buffer = IndexBuffer::new(display, TrianglesList, index).unwrap();
         Mesh
         {
             verties: VertexBuffer::new(display, verties).unwrap(),
-            indices: Either::Left(IndexBuffer::new(display, PrimitiveType::TrianglesList, index).unwrap()),
+            indices: Either::Left(buffer),
         }
     }
 }
 
 
-impl<T> AsRef<Mesh<T>> for Mesh<T>
-    where T: VertexType
+/// Base renderable object.
+pub trait Model<S: ::shader::Shader>
 {
-    fn as_ref(&self) -> &Self { self }
+    fn mesh(&self) -> &Mesh<S::Vertex>;
+    fn uniforms(&self, parent: &Matrix4<f32>) -> S::Uniforms;
 }
-
-
-/// Polygon types.
-pub trait Polygon<T: VertexType>: AsRef<Mesh<T>> {}
-
-
-impl<T: AsRef<Mesh<U>>, U: VertexType> Polygon<U> for T {}
-
 

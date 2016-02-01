@@ -5,11 +5,12 @@ extern crate glium;
 extern crate cgmath;
 
 
-use std::convert::AsRef;
 use glium::glutin::Event;
 use glium::Surface;
 use cgmath::{ Matrix4, Rotation3, Rad, Quaternion, Angle };
-use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera, Timer, Transform };
+use erya::shader;
+use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera,
+            Timer, Transform, Model };
 
 
 #[derive(Copy, Clone)]
@@ -33,7 +34,7 @@ implement_uniforms! { Uniforms, mat }
 struct Shader;
 
 
-impl erya::shader::Shader for Shader
+impl shader::Shader for Shader
 {
     type Vertex = Vertex;
     type Uniforms = Uniforms;
@@ -95,22 +96,15 @@ impl Triangle
 }
 
 
-impl Renderable<Shader> for Triangle
+impl Model<Shader> for Triangle
 {
     fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
     {
         let mat = parent * self.transform.matrix();
-        Uniforms 
-        {
-            mat: mat.into(),
-        }
+        Uniforms { mat: mat.into() }
     }
-}
-
-
-impl AsRef<Mesh<Vertex>> for Triangle
-{
-    fn as_ref(&self) -> &Mesh<Vertex> { &self.mesh }
+    
+    fn mesh(&self) -> &Mesh<Vertex> { &self.mesh }
 }
 
 
@@ -130,7 +124,7 @@ fn main()
         let mut target = display.draw();
         triangle.transform.rotation = Quaternion::from_angle_x(Rad::new(angle));
         target.clear_color(0.0, 0.0, 0.0, 0.0);
-        renderer.render(&mut target, &camera.matrix(), &triangle);
+        triangle.draw(&renderer, &mut target, &camera.matrix());
         target.finish().unwrap();
         for event in display.poll_events()
         {

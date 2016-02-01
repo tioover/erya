@@ -1,14 +1,12 @@
 //! Basic 2D game object and shader.
 
-use std::convert::AsRef;
 use glium::Display;
 use num::NumCast;
 use texture::TextureRef;
-use mesh::Mesh;
+use model::{ Mesh, Model };
 use transform::Transform;
 use rect::Rect;
 use utils::cast;
-use renderer::Renderable;
 use cgmath::Matrix4;
 use id::Id;
 
@@ -132,15 +130,10 @@ impl<'display> Sprite<'display>
 }
 
 
-impl<'display> AsRef<Mesh<Vertex>> for Sprite<'display>
+impl<'display> Model<Shader> for Sprite<'display>
 {
-    fn as_ref(&self) -> &Mesh<Vertex> { &self.mesh }
-}
-
-
-
-impl<'display> Renderable<Shader> for Sprite<'display>
-{
+    fn mesh(&self) -> &Mesh<Vertex> { &self.mesh }
+    
     fn uniforms(&self, parent: &Matrix4<f32>) -> Uniforms
     {
         Uniforms
