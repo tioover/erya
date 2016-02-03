@@ -24,13 +24,20 @@ pub struct Texture
 
 
 impl Texture {
+
     pub fn new<'a, T>(display: &Display, source: T) -> Texture
+        where T: Texture2dDataSource<'a>
+    {
+        Texture::with_id(display, source, Id::new())
+    }
+
+    pub fn with_id<'a, T>(display: &Display, source: T, id: Id) -> Texture
         where T: Texture2dDataSource<'a>
     {
         let tex = TextureData::new(display, source).unwrap();
         Texture
         {
-            id: Id::new(),
+            id: id,
             width: tex.get_width(),
             height: tex.get_height().unwrap(),
             data: tex,

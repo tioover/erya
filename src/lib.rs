@@ -13,6 +13,7 @@ extern crate num;
 extern crate either;
 #[macro_use]
 extern crate glium;
+extern crate fps_counter;
 
 
 pub use glium::Display;
@@ -31,6 +32,8 @@ pub mod shader;
 pub mod sprite;
 pub mod utils;
 pub mod layer;
+pub mod queue;
+pub mod manager;
 
 
 pub use utils::build_display;
