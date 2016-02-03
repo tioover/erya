@@ -1,47 +1,34 @@
 extern crate erya;
 #[macro_use]
 extern crate glium;
+extern crate image;
 
 
+use std::rc::Rc;
 use glium::glutin::Event;
 use glium::Surface;
 use erya::sprite;
-use erya::{ Renderer, Camera2D, Camera, Timer, Sprite, Renderable };
-use erya::loader::{ Queue, Key };
-use erya::texture::Texture;
+use erya::{ Renderer, Camera2D, Camera, Sprite, Renderable, Texture };
 
 
 fn main()
 {
     let display = erya::build_display("image", (800, 600));
-    let mut queue = Queue::<Texture>::new(&display, vec![Key::from("examples/assets/block.png")]);
+    let texture =
+    {
+        let image = image::open("examples/assets/block.png").unwrap();
+        Rc::new(Texture::from_image(&display, &image))
+    };
+    let sprite = Sprite::new(&display, texture, 128, 128);
     let camera = Camera2D::new(&display);
     let renderer = Renderer::<sprite::Shader>::new(&display);
-    let mut timer = Timer::new().limit(40);
-    let mut sprite: Option<Sprite> = None;
 
     'main: loop
     {
-        use erya::loader::QueueState::{ Empty, NotReceived, Received };
         let camera = camera.matrix();
         let mut target = display.draw();
-
-
-        match queue.try_recv()
-        {
-            NotReceived => target.clear_color(0.25, 0.25, 0.25, 0.0),
-            Received(ref key) =>
-            {
-                let tex = queue.received[key].clone();
-                sprite = Some(Sprite::new(&display, tex, 128, 128));
-            }
-            Empty =>
-            {
-                target.clear_color(0.0, 0.0, 0.0, 0.0);
-                sprite.as_ref().map(|x| x.draw(&renderer, &mut target, &camera));
-            }
-
-        }
+        target.clear_color(0.0, 0.0, 0.0, 0.0);
+        sprite.draw(&renderer, &mut target, &camera);
         target.finish().unwrap();
         for event in display.poll_events()
         {
@@ -51,6 +38,5 @@ fn main()
                 _ => (),
             }
         }
-        timer.update();
     }
 }

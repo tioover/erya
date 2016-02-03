@@ -5,13 +5,12 @@ extern crate glium;
 
 use glium::Surface;
 use glium::glutin::Event;
-use erya::{ Timer, build_display };
+use erya::build_display;
 
 
 fn main()
 {
     let display = build_display("window", (800, 600));
-    let mut timer = Timer::new().limit(20);
 
     'main: loop
     {
@@ -26,6 +25,5 @@ fn main()
                 _ => (),
             }
         }
-        timer.update();
     }
 }

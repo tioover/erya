@@ -24,14 +24,12 @@ pub mod texture;
 pub mod id;
 pub mod math;
 pub mod rect;
-pub mod timer;
 pub mod camera;
 pub mod transform;
 #[macro_use]
 pub mod shader;
 pub mod sprite;
 pub mod utils;
-pub mod loader;
 pub mod layer;
 
 
@@ -40,7 +38,6 @@ pub use renderer::{ Renderer, Renderable };
 pub use texture::{ Texture, TextureRef };
 pub use camera::{ Camera, Camera2D, Camera3D };
 pub use sprite::Sprite;
-pub use timer::Timer;
 pub use mesh::Mesh;
 pub use transform::Transform;
 

@@ -10,7 +10,7 @@ use glium::{ Surface, Frame };
 use cgmath::{ Matrix4, Rotation3, Rad, Quaternion, Angle };
 use erya::shader;
 use erya::{ Renderer, Renderable, Display, Mesh, Camera3D, Camera,
-            Timer, Transform };
+            Transform };
 
 
 #[derive(Copy, Clone)]
@@ -113,7 +113,6 @@ fn main()
     let renderer = Renderer::<Shader>::new(&display);
     let mut camera = Camera3D::new(&display);
     camera.eye = cgmath::Point3::new(3.0, 4.0, 4.0);
-    let mut timer = Timer::new().limit(60);
     let mut angle: f32 = 0.0;
     let mut triangle = Triangle::new(&display);
 
@@ -133,6 +132,5 @@ fn main()
                 _ => (),
             }
         }
-        timer.update();
     }
 }
