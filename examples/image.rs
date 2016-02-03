@@ -8,14 +8,13 @@ use glium::Surface;
 use erya::sprite;
 use erya::{ Renderer, Camera2D, Camera, Timer, Sprite, Renderable };
 use erya::loader::{ Queue, Key };
-use erya::texture::{ Texture, TextureRef };
+use erya::texture::Texture;
 
 
 fn main()
 {
     let display = erya::build_display("image", (800, 600));
-    let res_key = Key::from("examples/assets/block.png");
-    let mut queue = Queue::<Texture>::new(&display, vec![res_key.clone()]);
+    let mut queue = Queue::<Texture>::new(&display, vec![Key::from("examples/assets/block.png")]);
     let camera = Camera2D::new(&display);
     let renderer = Renderer::<sprite::Shader>::new(&display);
     let mut timer = Timer::new().limit(40);
@@ -33,14 +32,13 @@ fn main()
             NotReceived => target.clear_color(0.25, 0.25, 0.25, 0.0),
             Received(ref key) =>
             {
-                let tex = TextureRef(queue.received[key].clone());
+                let tex = queue.received[key].clone();
                 sprite = Some(Sprite::new(&display, tex, 128, 128));
             }
             Empty =>
             {
                 target.clear_color(0.0, 0.0, 0.0, 0.0);
-                let sprite = sprite.as_ref().unwrap();
-                sprite.draw(&renderer, &mut target, &camera);
+                sprite.as_ref().map(|x| x.draw(&renderer, &mut target, &camera));
             }
 
         }

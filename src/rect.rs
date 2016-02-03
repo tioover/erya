@@ -1,27 +1,25 @@
 //! Integer rectangle.
-use num::NumCast;
-use utils::cast;
 
 
 pub struct Rect
 {
-    pub x: u32,
-    pub y: u32,
-    pub width: u32,
-    pub height: u32,
+    pub x: i32,
+    pub y: i32,
+    pub width: i32,
+    pub height: i32,
 }
 
 
 impl Rect
 {
-    pub fn new<N: NumCast>(x: N, y: N, w: N, h: N) -> Rect
+    pub fn new(x: i32, y: i32, w: i32, h: i32) -> Rect
     {
         Rect
         {
-            x: cast(x),
-            y: cast(y),
-            width: cast(w),
-            height: cast(h)
+            x: x,
+            y: y,
+            width: w,
+            height: h,
         }
     }
 }

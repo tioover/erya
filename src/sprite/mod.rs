@@ -1,14 +1,13 @@
 //! Basic 2D object and shader.
 
+use std::rc::Rc;
 use glium::{ Display, Frame };
-use num::NumCast;
-use texture::TextureRef;
+use texture::{ Texture, TextureRef };
 use mesh::Mesh;
 use shader::ShaderType;
 use transform::Transform;
 use renderer::{ Renderer, Renderable };
 use rect::Rect;
-use utils::cast;
 use cgmath::Matrix4;
 use id::Id;
 
@@ -18,7 +17,7 @@ use id::Id;
 pub struct Vertex
 {
     pub position: [f32; 2],
-    pub texture_position: [u32; 2],
+    pub texture_position: [i32; 2],
 }
 
 
@@ -75,29 +74,29 @@ pub struct Sprite<'display>
 
 impl<'display> Sprite<'display>
 {
-    pub fn new<N>(display: &'display Display, tex: TextureRef, width: N, height: N)
+    pub fn new(display: &'display Display, tex: Rc<Texture>, width: u32, height: u32)
         -> Sprite<'display>
-        where N: NumCast + Clone
     {
-        let rect = Rect::new(0, 0, tex.width, tex.height);
+        let rect = Rect::new(0, 0, tex.width as i32, tex.height as i32);
         Sprite::with_rect(display, tex, rect, width, height)
     }
 
     /// Create a sprite with size and
     /// [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas).
-    pub fn with_rect<N>(display: &'display Display, tex: TextureRef,
-                        rect: Rect, width: N, height: N) -> Sprite<'display>
-        where N: NumCast + Clone
+    pub fn with_rect(display: &'display Display, tex: Rc<Texture>,
+                     rect: Rect, width: u32, height: u32)
+        -> Sprite<'display>
     {
+        let (w, h) = (width as f32, height as f32);
         Sprite
         {
             id: Id::new(),
-            texture: tex,
-            width: cast(width.clone()),
-            height: cast(height.clone()),
+            texture: TextureRef(tex),
+            width: w,
+            height: h,
             transform: Transform::new(),
             opacity: 1.0,
-            mesh: Sprite::build_mesh(display, cast(width), cast(height), &rect),
+            mesh: Sprite::build_mesh(display, w, h, &rect),
             rect: rect,
             display: display,
         }
