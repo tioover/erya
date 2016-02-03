@@ -21,13 +21,15 @@ pub trait ShaderType
     /// Compilation shaders and return shaders object.
     fn program(display: &Display) -> Program
     {
-        program!(display,
-            140 =>
-            {
-                vertex: Self::vertex(),
-                fragment: Self::fragment(),
+        let result = Program::from_source(display, Self::vertex(), Self::fragment(), None);
+        match result
+        {
+            Ok(program) => program,
+            Err(err) => {
+                println!("{}", err);
+                panic!("Create shader program error.");
             },
-        ).unwrap()
+        }
     }
 }
 
