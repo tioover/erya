@@ -20,7 +20,7 @@ pub fn build_display<T>(title: T, (width, height): (u32, u32)) -> Display
 }
 
 
-/// Number cast function.
+/// Number types cast function.
 #[inline]
 pub fn cast<T, U>(x: T) -> U
     where T: NumCast, U: NumCast

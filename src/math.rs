@@ -13,7 +13,7 @@ pub const ROUND: f32 = 6.28318530717958647692528676655900576;
 pub fn curve<F>(control_point: [Vector2<F>; 4], t: F) -> Vector2<F>
     where F: BaseFloat
 {
-    let co = |x| num::cast::<_, F>(x).unwrap(); // Float covariance.
+    let co = |x| num::cast::<_, F>(x).unwrap(); // covariance into F
 
     let p = control_point;
     let r = co(1.0) - t;
