@@ -18,27 +18,27 @@ pub trait Camera
 
 
 /// A camera matrix, convert screen coordinates to OpenGL coordinates.
-pub struct Camera2D<'display>
+pub struct Camera2D
 {
-    display: &'display Display,
+    display: Display,
     transform: Transform,
 }
 
 
-impl<'display> Camera2D<'display>
+impl Camera2D
 {
-    pub fn new(display: &'display Display) -> Camera2D<'display>
+    pub fn new(display: &Display) -> Camera2D
     {
         Camera2D
         {
-            display: display,
+            display: display.clone(),
             transform: Transform::new(),
         }
     }
 }
 
 
-impl<'a> Camera for Camera2D<'a>
+impl Camera for Camera2D
 {
     fn matrix(&self) -> Matrix4<f32>
     {
@@ -57,9 +57,9 @@ impl<'a> Camera for Camera2D<'a>
 
 
 /// 3D perspective camera.
-pub struct Camera3D<'display>
+pub struct Camera3D
 {
-    display: &'display Display,
+    display: Display,
     pub pov: Deg<f32>,
     pub near: f32,
     pub far: f32,
@@ -68,13 +68,13 @@ pub struct Camera3D<'display>
 }
 
 
-impl<'display> Camera3D<'display>
+impl Camera3D
 {
-    pub fn new(display: &'display Display) -> Camera3D<'display>
+    pub fn new(display: &Display) -> Camera3D
     {
         Camera3D
         {
-            display: display,
+            display: display.clone(),
             pov: deg(45.0),
             near: 0.1,
             far: 100.0,
@@ -83,17 +83,17 @@ impl<'display> Camera3D<'display>
         }
     }
 
-    pub fn pov(self, pov: f32) -> Camera3D<'display>
+    pub fn pov(self, pov: f32) -> Camera3D
     {
         Camera3D { pov: deg(pov), ..self }
     }
 
-    pub fn near(self, near: f32) -> Camera3D<'display>
+    pub fn near(self, near: f32) -> Camera3D
     {
         Camera3D { near: near, ..self }
     }
 
-    pub fn far(self, far: f32) -> Camera3D<'display>
+    pub fn far(self, far: f32) -> Camera3D
     {
         Camera3D { far: far, ..self }
     }
@@ -106,7 +106,7 @@ impl<'display> Camera3D<'display>
 }
 
 
-impl<'a> Camera for Camera3D<'a>
+impl Camera for Camera3D
 {
     fn matrix(&self) -> Matrix4<f32>
     {
