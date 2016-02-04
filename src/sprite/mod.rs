@@ -58,10 +58,9 @@ implement_uniforms! { Uniforms, matrix, opacity, image }
 
 
 /// Basic 2D object.
-pub struct Sprite<'display>
+pub struct Sprite
 {
     pub id: Id,
-    display: &'display Display,
     texture: TextureRef,
     width: f32,
     height: f32,
@@ -72,10 +71,10 @@ pub struct Sprite<'display>
 }
 
 
-impl<'display> Sprite<'display>
+impl Sprite
 {
-    pub fn new(display: &'display Display, tex: Rc<Texture>, width: u32, height: u32)
-        -> Sprite<'display>
+    pub fn new(display: &Display, tex: Rc<Texture>, width: u32, height: u32)
+        -> Sprite
     {
         let rect = Rect::new(0, 0, tex.width as i32, tex.height as i32);
         Sprite::with_rect(display, tex, rect, width, height)
@@ -83,9 +82,9 @@ impl<'display> Sprite<'display>
 
     /// Create a sprite with size and
     /// [texture atlas](https://en.wikipedia.org/wiki/Texture_atlas).
-    pub fn with_rect(display: &'display Display, tex: Rc<Texture>,
+    pub fn with_rect(display: &Display, tex: Rc<Texture>,
                      rect: Rect, width: u32, height: u32)
-        -> Sprite<'display>
+        -> Sprite
     {
         let (w, h) = (width as f32, height as f32);
         Sprite
@@ -98,7 +97,6 @@ impl<'display> Sprite<'display>
             opacity: 1.0,
             mesh: Sprite::build_mesh(display, w, h, &rect),
             rect: rect,
-            display: display,
         }
     }
 
@@ -110,30 +108,30 @@ impl<'display> Sprite<'display>
         let w = rect.width as f32;
         let h = rect.height as f32;
         let verties = [
-            Vertex { position: [  0.0, height], texture_position: [x, y+h] },
-            Vertex { position: [  0.0,    0.0], texture_position: [x, y] },
-            Vertex { position: [width,    0.0], texture_position: [x+w, y] },
-            Vertex { position: [width, height], texture_position: [x+w,y+h] },
+            Vertex { position: [  0.0, height], texture_position: [  x, y+h] },
+            Vertex { position: [  0.0,    0.0], texture_position: [  x,   y] },
+            Vertex { position: [width,    0.0], texture_position: [x+w,   y] },
+            Vertex { position: [width, height], texture_position: [x+w, y+h] },
         ];
 
         Mesh::with_indices(display, &verties, &[0, 1, 2, 2, 3, 0])
     }
 
-    pub fn resize(&mut self, width: f32, height: f32)
+    pub fn resize(&mut self, display: &Display, width: f32, height: f32)
     {
-        self.mesh = Sprite::build_mesh(self.display, width, height, &self.rect);
+        self.mesh = Sprite::build_mesh(display, width, height, &self.rect);
     }
 
     /// Change the texture atlas rectangle.
-    pub fn rect(&mut self, rect: Rect)
+    pub fn rect(&mut self, display: &Display, rect: Rect)
     {
-        self.mesh = Sprite::build_mesh(self.display, self.width, self.height, &rect);
+        self.mesh = Sprite::build_mesh(display, self.width, self.height, &rect);
         self.rect = rect;
     }
 }
 
 
-impl<'a> Renderable<Shader> for Sprite<'a>
+impl Renderable<Shader> for Sprite
 {
     fn draw(&self, renderer: &Renderer<Shader>, target: &mut Frame, parent: &Matrix4<f32>)
     {
