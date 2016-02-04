@@ -5,7 +5,7 @@ extern crate glium;
 use std::rc::Rc;
 use glium::glutin;
 use glium::Surface;
-use erya::queue::{ Queue, Event };
+use erya::queue::{ Queue, Event, EventHandler };
 use erya::manager::TextureManager;
 use erya::{ Renderer, Camera2D, Camera, Sprite, Renderable, sprite };
 
@@ -24,7 +24,7 @@ fn main()
     {
         if let Ok(e) = queue.receiver.try_recv()
         {
-            manager.handle(e);
+            manager.pipe(e);
             let texture = manager.get(&id).unwrap();
             sprite = Some(Sprite::new(&display, texture, 128, 128));
         }

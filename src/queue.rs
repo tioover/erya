@@ -4,16 +4,17 @@ use std::any::Any;
 use std::sync::mpsc::{ Receiver, Sender, channel };
 use id::Id;
 
-pub struct Queue<E: EventType>
+
+pub struct Queue<T>
 {
-    pub receiver: Receiver<(Id, E)>,
-    pub sender: Sender<(Id, E)>,
+    pub receiver: Receiver<(Id, T)>,
+    pub sender: Sender<(Id, T)>,
 }
 
 
-impl<E: EventType> Queue<E>
+impl<T> Queue<T>
 {
-    pub fn new() -> Queue<E>
+    pub fn new() -> Queue<T>
     {
         let (tx, rx) = channel();
         Queue { receiver: rx, sender: tx }
@@ -21,20 +22,17 @@ impl<E: EventType> Queue<E>
 }
 
 
-pub trait EventType {}
-
-
+/// General event.
 pub enum Event
 {
     Data(Box<Any+Send>),
+    /// Task failure.
     Failure,
     Update(Id),
 }
 
 
-impl EventType for Event {}
-
-
+/// Timing event.
 pub enum TimeEvent
 {
     /// Current frame should be ended.
@@ -44,4 +42,10 @@ pub enum TimeEvent
     Trigger,
 }
 
-impl EventType for TimeEvent {}
+
+pub trait EventHandler
+{
+    /// Hendle asynchronous event, if match return **None** and consume event.
+    fn pipe(&self, (Id, Event)) -> Option<(Id, Event)>;
+}
+

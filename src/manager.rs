@@ -1,3 +1,5 @@
+//! Event handlers.
+
 use std::convert::AsRef;
 use std::path::Path;
 use std::rc::Rc;
@@ -9,34 +11,36 @@ use glium::Display;
 use glium::texture::RawImage2d;
 use image;
 use image::{DynamicImage, GenericImage};
-use queue::{ Queue, Event };
+use queue::{ Queue, Event, EventHandler };
 use id::Id;
 use texture::Texture;
 
 
-pub struct TextureManager<'display>
+/// Load and management texture.
+pub struct TextureManager
 {
-    display: &'display Display,
+    display: Display,
     queue: Rc<Queue<Event>>,
     load_jobs: RefCell<HashSet<Id>>,
     textures: RefCell<HashMap<Id, Rc<Texture>>>,
 }
 
 
-impl<'display> TextureManager<'display>
+impl TextureManager
 {
-    pub fn new(display: &'display Display, queue: Rc<Queue<Event>>)
-        -> TextureManager<'display>
+    pub fn new(display: &Display, queue: Rc<Queue<Event>>)
+        -> TextureManager
     {
         TextureManager
         {
-            display: display,
+            display: display.clone(),
             queue: queue,
             load_jobs: RefCell::new(HashSet::new()),
             textures: RefCell::new(HashMap::new()),
         }
     }
 
+    /// Return texture id, can get texture by id.
     pub fn load<P>(&self, path: P) -> Id
         where P: AsRef<Path> + Send + 'static
     {
@@ -47,7 +51,8 @@ impl<'display> TextureManager<'display>
             jobs.insert(id);
         }
         thread::spawn(move || sender.send((id, 
-                if let Ok(image) = image::open(path) { Event::Data(encode(&image)) }
+                if let Ok(image) = image::open(path)
+                    { Event::Data(TextureManager::encode(&image)) }
                 else { Event::Failure }
             )).unwrap());
         return id;
@@ -58,8 +63,21 @@ impl<'display> TextureManager<'display>
         self.textures.borrow().get(id).map(|x| x.clone())
     }
 
-    pub fn handle(&self, (id, event): (Id, Event)) -> Option<(Id, Event)>
+    fn encode(image: &DynamicImage) -> Box<Any+Send>
     {
+        Box::new(RawImage2d::from_raw_rgba_reversed(
+            image.raw_pixels(),
+            image.dimensions()))
+    }
+}
+
+
+
+impl EventHandler for TextureManager
+{
+    fn pipe(&self, (id, event): (Id, Event)) -> Option<(Id, Event)>
+    {
+
         if !self.load_jobs.borrow().contains(&id) { Some((id, event)) }
         else 
         {
@@ -67,9 +85,10 @@ impl<'display> TextureManager<'display>
             {
                 Event::Data(data) =>
                 {
-                    let data = *data.downcast::<RawImage2d<'static, u8>>().unwrap();
+                    let data = *data.downcast::<RawImage2d<'static, u8>>()
+                        .expect("Box downcast error.");
                     let mut textures = self.textures.borrow_mut();
-                    textures.insert(id, Rc::new(Texture::with_id(self.display, data, id)));
+                    textures.insert(id, Rc::new(Texture::with_id(&self.display, data, id)));
                 }
                 _ => panic!(),
             };
@@ -78,12 +97,5 @@ impl<'display> TextureManager<'display>
     }
 }
 
-
-fn encode(image: &DynamicImage) -> Box<Any+Send>
-{
-    Box::new(RawImage2d::from_raw_rgba_reversed(
-        image.raw_pixels(),
-        image.dimensions()))
-}
 
 
