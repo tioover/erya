@@ -17,7 +17,7 @@ use id::Id;
 pub struct Vertex
 {
     pub position: [f32; 2],
-    pub texture_position: [i32; 2],
+    pub texture_position: [f32; 2],
 }
 
 
@@ -105,10 +105,10 @@ impl<'display> Sprite<'display>
     fn build_mesh(display: &Display, width: f32, height: f32, rect: &Rect)
         -> Mesh<Vertex>
     {
-        let x = rect.x;
-        let y = rect.y;
-        let w = rect.width;
-        let h = rect.height;
+        let x = rect.x as f32;
+        let y = rect.y as f32;
+        let w = rect.width as f32;
+        let h = rect.height as f32;
         let verties = [
             Vertex { position: [  0.0, height], texture_position: [x, y+h] },
             Vertex { position: [  0.0,    0.0], texture_position: [x, y] },
