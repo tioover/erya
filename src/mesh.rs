@@ -3,8 +3,8 @@
 use glium;
 use glium::Display;
 use glium::index::PrimitiveType::TrianglesList;
-use glium::index::NoIndices;
-use either::Either;
+use glium::index::{ NoIndices, IndicesSource };
+use either::{ Either, Left, Right };
 
 pub use glium::VertexBuffer;
 pub use glium::Vertex as VertexType;
@@ -31,7 +31,7 @@ impl<T: VertexType> Mesh<T>
         Mesh
         {
             verties: VertexBuffer::new(display, verties).unwrap(),
-            indices: Either::Right(NoIndices(TrianglesList)),
+            indices: Right(NoIndices(TrianglesList)),
         }
     }
 
@@ -42,7 +42,16 @@ impl<T: VertexType> Mesh<T>
         Mesh
         {
             verties: VertexBuffer::new(display, verties).unwrap(),
-            indices: Either::Left(buffer),
+            indices: Left(buffer),
+        }
+    }
+
+    pub fn indices<'a>(&'a self) -> IndicesSource<'a>
+    {
+        match self.indices
+        {
+            Left(ref x) => x.into(),
+            Right(ref x) => x.into(),
         }
     }
 }

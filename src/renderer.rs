@@ -38,17 +38,9 @@ impl<'display, S: ShaderType> Renderer<'display, S>
     pub fn draw(&self, target: &mut Frame, mesh: &Mesh<S::Vertex>,
                 uniforms: &S::Uniforms)
     {
-        use glium::index::IndicesSource;
-        use either::{ Left, Right };
-
-        let indices: IndicesSource = match mesh.indices
-        {
-            Left(ref x) => x.into(),
-            Right(ref x) => x.into(),
-        };
         target.draw(
             &mesh.verties,
-            indices,
+            mesh.indices(),
             &self.program,
             uniforms,
             &self.params
